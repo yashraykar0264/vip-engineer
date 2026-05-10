@@ -1,15 +1,9 @@
 const express = require("express");
-
 const jwt = require("jsonwebtoken");
-
 const cors = require("cors");
-
 const bcrypt = require("bcryptjs");
-
 const multer = require("multer");
-
 const path = require("path");
-
 const fs = require("fs");
 
 require("dotenv").config();
@@ -17,22 +11,23 @@ require("dotenv").config();
 const connectDB = require("./config/db");
 
 const authMiddleware = require("./middleware/authMiddleware");
-
 const adminMiddleware = require("./middleware/adminMiddleware");
 
 const User = require("./models/User");
-
 const Note = require("./models/Note");
-
 const Purchase = require("./models/Purchase");
 
 const app = express();
 
-// DATABASE CONNECT
+// ================================
+// DATABASE
+// ================================
 
 connectDB();
 
+// ================================
 // MIDDLEWARE
+// ================================
 
 app.use(
   cors({
@@ -44,14 +39,16 @@ app.use(
 
 app.use(express.json());
 
+// ================================
 // STATIC FOLDERS
+// ================================
 
 app.use("/uploads", express.static("uploads"));
 
 app.use("/screenshots", express.static("screenshots"));
 
 // ================================
-// MULTER STORAGE
+// PDF STORAGE
 // ================================
 
 const storage = multer.diskStorage({
@@ -78,12 +75,6 @@ const screenshotStorage = multer.diskStorage({
   },
 });
 
-// SCREENSHOT UPLOAD
-
-const screenshotUpload = multer({
-  storage: screenshotStorage,
-});
-
 // ================================
 // FILE FILTER
 // ================================
@@ -92,17 +83,21 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF allowed"), false);
+    cb(new Error("Only PDF Allowed"), false);
   }
 };
 
 // ================================
-// PDF UPLOAD
+// MULTER
 // ================================
 
 const upload = multer({
   storage,
   fileFilter,
+});
+
+const screenshotUpload = multer({
+  storage: screenshotStorage,
 });
 
 // ================================
@@ -114,7 +109,7 @@ app.get("/", (req, res) => {
 });
 
 // ================================
-// SIGNUP ROUTE
+// SIGNUP
 // ================================
 
 app.post("/signup", async (req, res) => {
@@ -143,7 +138,7 @@ app.post("/signup", async (req, res) => {
     await newUser.save();
 
     res.json({
-      message: "User Registered Successfully",
+      message: "Signup Successful",
     });
   } catch (error) {
     console.log(error);
@@ -155,7 +150,7 @@ app.post("/signup", async (req, res) => {
 });
 
 // ================================
-// LOGIN ROUTE
+// LOGIN
 // ================================
 
 app.post("/login", async (req, res) => {
@@ -208,7 +203,7 @@ app.post("/login", async (req, res) => {
 });
 
 // ================================
-// ADD NOTE ROUTE
+// ADD NOTE
 // ================================
 
 app.post(
@@ -226,7 +221,7 @@ app.post(
 
       if (!req.file) {
         return res.status(400).json({
-          message: "PDF file required",
+          message: "PDF Required",
         });
       }
 
@@ -287,7 +282,7 @@ app.post(
 
       if (!req.file) {
         return res.status(400).json({
-          message: "Screenshot required",
+          message: "Screenshot Required",
         });
       }
 
@@ -298,7 +293,7 @@ app.post(
 
       if (existingPurchase) {
         return res.status(400).json({
-          message: "Purchase already exists",
+          message: "Purchase Already Exists",
         });
       }
 
@@ -330,7 +325,7 @@ app.post(
 );
 
 // ================================
-// GET PURCHASE REQUESTS
+// PURCHASE REQUESTS
 // ================================
 
 app.get(
@@ -360,7 +355,7 @@ app.get(
 );
 
 // ================================
-// APPROVE PURCHASE
+// APPROVE PAYMENT
 // ================================
 
 app.patch(
@@ -376,7 +371,7 @@ app.patch(
 
       if (!purchase) {
         return res.status(404).json({
-          message: "Purchase not found",
+          message: "Purchase Not Found",
         });
       }
 
@@ -412,13 +407,15 @@ app.get(
 
       const purchase = await Purchase.findOne({
         userId: req.user.id,
+
         noteId,
+
         paymentStatus: "approved",
       }).populate("noteId");
 
       if (!purchase) {
         return res.status(403).json({
-          message: "Access denied",
+          message: "Access Denied",
         });
       }
 
@@ -426,7 +423,7 @@ app.get(
 
       if (!fs.existsSync(pdfPath)) {
         return res.status(404).json({
-          message: "File not found",
+          message: "PDF Not Found",
         });
       }
 
@@ -461,7 +458,7 @@ app.get(
       console.log(error);
 
       res.status(500).json({
-        message: "Failed to fetch purchases",
+        message: "Failed To Fetch Purchases",
       });
     }
   },
@@ -486,13 +483,15 @@ app.delete(
 
       if (!note) {
         return res.status(404).json({
-          message: "Note not found",
+          message: "Note Not Found",
         });
       }
 
       await Purchase.deleteMany({
         noteId,
       });
+
+      // DELETE PDF
 
       if (note.pdf && typeof note.pdf === "string") {
         const pdfPath = path.join(__dirname, "uploads", note.pdf);
@@ -518,7 +517,7 @@ app.delete(
 );
 
 // ================================
-// SERVER START
+// SERVER
 // ================================
 
 const PORT = process.env.PORT || 5000;
