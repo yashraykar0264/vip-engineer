@@ -182,16 +182,15 @@ export default function AdminRequests() {
                   {req.screenshot && (
                     <div className="mt-4">
                       <h6 className="fw-bold mb-2">Payment Screenshot 📸</h6>
-
                       <img
-                        src={`http://localhost:5000/screenshots/${req.screenshot}`}
+                        src={`https://vip-engineer.onrender.com${purchase.screenshot}`}
                         alt="payment"
-                        className="img-fluid rounded"
                         style={{
+                          width: "100%",
                           height: "220px",
                           objectFit: "cover",
-                          width: "100%",
-                          border: "2px solid #e2e8f0",
+                          borderRadius: "12px",
+                          marginTop: "10px",
                         }}
                       />
                     </div>
