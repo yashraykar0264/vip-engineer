@@ -32,7 +32,7 @@ connectDB();
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://vip-engineer.vercel.app"],
-
+   // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
