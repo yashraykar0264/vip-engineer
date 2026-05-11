@@ -14,8 +14,6 @@ export default function AdminRequests() {
 
     const role = localStorage.getItem("role");
 
-    // PROTECT ADMIN PAGE
-
     if (!token || role !== "admin") {
       navigate("/");
 
@@ -75,6 +73,17 @@ export default function AdminRequests() {
     localStorage.clear();
 
     navigate("/");
+  };
+
+  // FIX SCREENSHOT URL
+
+  const getScreenshotUrl = (screenshot) => {
+    if (!screenshot) return "";
+
+    // remove extra screenshots/ if already exists
+    const cleanName = screenshot.replace("screenshots/", "");
+
+    return `https://vip-engineer.onrender.com/screenshots/${cleanName}`;
   };
 
   return (
@@ -182,9 +191,9 @@ export default function AdminRequests() {
                   {req.screenshot && (
                     <div className="mt-4">
                       <h6 className="fw-bold mb-2">Payment Screenshot 📸</h6>
-
+                    <p>{getScreenshotUrl(req.screenshot)}</p>
                       <img
-                        src={`https://vip-engineer.onrender.com${req.screenshot}`}
+                        src={getScreenshotUrl(req.screenshot)}
                         alt="payment"
                         style={{
                           width: "100%",
