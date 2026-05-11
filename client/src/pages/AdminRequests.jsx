@@ -80,7 +80,6 @@ export default function AdminRequests() {
   const getScreenshotUrl = (screenshot) => {
     if (!screenshot) return "";
 
-    // remove extra screenshots/ if already exists
     const cleanName = screenshot.replace("screenshots/", "");
 
     return `https://vip-engineer.onrender.com/screenshots/${cleanName}`;
@@ -191,10 +190,13 @@ export default function AdminRequests() {
                   {req.screenshot && (
                     <div className="mt-4">
                       <h6 className="fw-bold mb-2">Payment Screenshot 📸</h6>
-                    <p>{getScreenshotUrl(req.screenshot)}</p>
+
                       <img
                         src={getScreenshotUrl(req.screenshot)}
                         alt="payment"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
                         style={{
                           width: "100%",
                           height: "220px",
