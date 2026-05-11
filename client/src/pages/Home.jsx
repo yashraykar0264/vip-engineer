@@ -315,8 +315,6 @@ export default function Home() {
                     }}
                   ></div>
 
-                  {/* PREMIUM BADGE */}
-
                   <span
                     className="badge bg-warning text-dark"
                     style={{
@@ -370,7 +368,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* WHY US */}
+        {/* WHY VIP ENGINEER */}
 
         <div className="mt-5">
           <h1 className="fw-bold">Why VIP Engineer? 🚀</h1>
@@ -429,72 +427,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* TESTIMONIALS */}
+        {/* FOOTER */}
 
-        <div className="mt-5">
-          <h1 className="fw-bold">Student Reviews ⭐</h1>
+        <footer
+          className="text-center text-white py-4 mt-5"
+          style={{
+            background: "linear-gradient(to right, #020617, #0f172a)",
+            borderRadius: "20px",
+          }}
+        >
+          <h5 className="fw-bold">VIP Engineer © 2026</h5>
 
-          <div className="row mt-4 g-4">
-            <div className="col-md-4">
-              <div
-                className="card border-0 shadow-lg p-4"
-                style={{
-                  borderRadius: "20px",
-                }}
-              >
-                <h5 className="fw-bold">Yash ⭐⭐⭐⭐⭐</h5>
-
-                <p className="text-secondary">
-                  Best notes platform for engineering students 🔥
-                </p>
-              </div>
-            </div>
-
-            <div className="col-md-4">
-              <div
-                className="card border-0 shadow-lg p-4"
-                style={{
-                  borderRadius: "20px",
-                }}
-              >
-                <h5 className="fw-bold">Mayur ⭐⭐⭐⭐⭐</h5>
-
-                <p className="text-secondary">
-                  Viva preparation became super easy 😎
-                </p>
-              </div>
-            </div>
-
-            <div className="col-md-4">
-              <div
-                className="card border-0 shadow-lg p-4"
-                style={{
-                  borderRadius: "20px",
-                }}
-              >
-                <h5 className="fw-bold">Rohit ⭐⭐⭐⭐⭐</h5>
-
-                <p className="text-secondary">
-                  Premium notes are worth every rupee 💯
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+          <p className="m-0 text-light">Built For Engineers ❤️</p>
+        </footer>
       </div>
-
-      {/* FOOTER */}
-
-      <footer
-        className="text-center text-white py-4 mt-5"
-        style={{
-          background: "linear-gradient(to right, #020617, #0f172a)",
-        }}
-      >
-        <h5 className="fw-bold">VIP Engineer © 2026</h5>
-
-        <p className="m-0 text-light">Built For Engineers ❤️</p>
-      </footer>
     </div>
   );
 }
