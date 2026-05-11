@@ -32,7 +32,6 @@ connectDB();
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://vip-engineer.vercel.app"],
-    // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
@@ -65,24 +64,20 @@ const storage = multer.diskStorage({
 // SCREENSHOT STORAGE
 // ================================
 
-// SCREENSHOT STORAGE
-
 const screenshotStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "screenshots/");
   },
 
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    const ext = path.extname(file.originalname).toLowerCase();
+
+    cb(null, Date.now() + ext);
   },
 });
 
-const screenshotUpload = multer({
-  storage: screenshotStorage,
-});
-
 // ================================
-// FILE FILTER
+// FILE FILTERS
 // ================================
 
 const fileFilter = (req, file, cb) => {
@@ -90,6 +85,16 @@ const fileFilter = (req, file, cb) => {
     cb(null, true);
   } else {
     cb(new Error("Only PDF Allowed"), false);
+  }
+};
+
+const screenshotFileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files allowed"), false);
   }
 };
 
@@ -104,6 +109,7 @@ const upload = multer({
 
 const screenshotUpload = multer({
   storage: screenshotStorage,
+  fileFilter: screenshotFileFilter,
 });
 
 // ================================
@@ -305,13 +311,9 @@ app.post(
 
       const newPurchase = new Purchase({
         userId: req.user.id,
-
         noteId,
-
         transactionId,
-
         screenshot: req.file.filename,
-
         paymentStatus: "pending",
       });
 
@@ -344,9 +346,7 @@ app.get(
   async (req, res) => {
     try {
       const purchases = await Purchase.find()
-
         .populate("userId")
-
         .populate("noteId");
 
       res.json(purchases);
@@ -413,9 +413,7 @@ app.get(
 
       const purchase = await Purchase.findOne({
         userId: req.user.id,
-
         noteId,
-
         paymentStatus: "approved",
       }).populate("noteId");
 
@@ -496,8 +494,6 @@ app.delete(
       await Purchase.deleteMany({
         noteId,
       });
-
-      // DELETE PDF
 
       if (note.pdf && typeof note.pdf === "string") {
         const pdfPath = path.join(__dirname, "uploads", note.pdf);
