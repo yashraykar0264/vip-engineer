@@ -143,7 +143,7 @@ export default function AdminRequests() {
                   }}
                 ></div>
 
-                {/* CARD BODY */}
+                {/* BODY */}
 
                 <div className="card-body p-4">
                   {/* USER */}
@@ -167,7 +167,7 @@ export default function AdminRequests() {
                     ₹{req.noteId?.price}
                   </h5>
 
-                  {/* TRANSACTION ID */}
+                  {/* TRANSACTION */}
 
                   <div className="mt-3">
                     <h6 className="fw-bold">Transaction ID 🧾</h6>
@@ -182,15 +182,16 @@ export default function AdminRequests() {
                   {req.screenshot && (
                     <div className="mt-4">
                       <h6 className="fw-bold mb-2">Payment Screenshot 📸</h6>
+
                       <img
-                        src={`https://vip-engineer.onrender.com${purchase.screenshot}`}
+                        src={`https://vip-engineer.onrender.com${req.screenshot}`}
                         alt="payment"
                         style={{
                           width: "100%",
                           height: "220px",
                           objectFit: "cover",
                           borderRadius: "12px",
-                          marginTop: "10px",
+                          border: "2px solid #e5e7eb",
                         }}
                       />
                     </div>
@@ -214,9 +215,9 @@ export default function AdminRequests() {
                     </span>
                   </div>
 
-                  {/* APPROVE BUTTON */}
+                  {/* BUTTON */}
 
-                  {req.paymentStatus !== "approved" && (
+                  {req.paymentStatus !== "approved" ? (
                     <button
                       className="btn btn-success w-100 fw-bold mt-4"
                       style={{
@@ -228,11 +229,7 @@ export default function AdminRequests() {
                     >
                       Approve Payment ✅
                     </button>
-                  )}
-
-                  {/* APPROVED */}
-
-                  {req.paymentStatus === "approved" && (
+                  ) : (
                     <button
                       className="btn btn-secondary w-100 fw-bold mt-4"
                       disabled
