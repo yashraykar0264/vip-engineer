@@ -5,7 +5,8 @@ import App from "./App";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-<HashRouter>
-  <App />
-</HashRouter>
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <HashRouter>
+    <App />
+  </HashRouter>
+);
