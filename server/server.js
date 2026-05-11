@@ -241,7 +241,7 @@ app.post(
         title,
         description,
         price,
-        pdf: req.file.filename,
+        pdf: `/uploads/${req.file.filename}`,
       });
 
       await newNote.save();
@@ -423,7 +423,9 @@ app.get(
         });
       }
 
-      const pdfPath = path.join(__dirname, "uploads", purchase.noteId.pdf);
+      const cleanPdf = purchase.noteId.pdf.replace("/uploads/", "");
+
+      const pdfPath = path.join(__dirname, "uploads", cleanPdf);
 
       if (!fs.existsSync(pdfPath)) {
         return res.status(404).json({
