@@ -1,386 +1,312 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+import API from "../services/api";
+
+export default function Dashboard() {
+  const [notes, setNotes] = useState([]);
+
+  const [purchases, setPurchases] = useState([]);
+
   const navigate = useNavigate();
 
-  const isLoggedIn = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
-  const handlePremiumClick = () => {
-    if (!isLoggedIn) {
-      alert("Please Login To Access Premium Notes 🔒");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-      navigate("/login");
-
+    if (!token) {
+      navigate("/");
       return;
     }
 
-    navigate("/dashboard");
+    fetchNotes();
+
+    fetchPurchases();
+  }, []);
+
+  const fetchNotes = async () => {
+    try {
+      const response = await API.get("/notes");
+
+      setNotes(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const freeNotes = [
-    {
-      title: "CN Quick Revision",
-      desc: "Important CN viva and exam shortcuts PDF.",
-      price: "FREE",
-      emoji: "🌐",
-    },
+  const fetchPurchases = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    {
-      title: "DBMS Viva Notes",
-      desc: "Most asked DBMS viva questions and answers.",
-      price: "FREE",
-      emoji: "🗂️",
-    },
+      const response = await API.get("/my-purchases", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    {
-      title: "Aptitude Cheatsheet",
-      desc: "Placement aptitude tricks and formulas.",
-      price: "FREE",
-      emoji: "🧠",
-    },
-  ];
+      setPurchases(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const premiumNotes = [
-    {
-      title: "DSA Master Notes",
-      desc: "Handwritten placement focused DSA notes.",
-      price: "₹49",
-      emoji: "🔥",
-    },
+  const handleLogout = () => {
+    localStorage.clear();
 
-    {
-      title: "OOP Premium Notes",
-      desc: "Easy OOP concepts with diagrams and examples.",
-      price: "₹29",
-      emoji: "💻",
-    },
+    navigate("/");
+  };
 
-    {
-      title: "AI/ML Crash Course",
-      desc: "Short and smart AI/ML revision notes.",
-      price: "₹59",
-      emoji: "🤖",
-    },
-  ];
+  const viewPDF = async (noteId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await API.get(`/notes/view/${noteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+
+        responseType: "blob",
+      });
+
+      const file = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const fileURL = URL.createObjectURL(file);
+
+      window.open(fileURL);
+    } catch (error) {
+      console.log(error);
+
+      alert("Access Denied");
+    }
+  };
+
+  const deleteNote = async (noteId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this note?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await API.delete(`/delete-note/${noteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
+
+      alert("Note Deleted Successfully ✅");
+    } catch (error) {
+      console.log(error);
+
+      alert("Delete Failed ❌");
+    }
+  };
+
+  const getPurchaseStatus = (noteId) => {
+    const purchase = purchases.find((p) => p.noteId === noteId);
+
+    return purchase?.paymentStatus || null;
+  };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to right, #e2e8f0, #f8fafc)",
+        background: "linear-gradient(135deg, #0f172a, #1e293b, #312e81)",
+        color: "white",
       }}
     >
-      {/* NAVBAR */}
-
       <nav
-        className="navbar navbar-expand-lg navbar-dark px-4 py-3"
+        className="navbar navbar-expand-lg px-4 py-3"
         style={{
-          background: "linear-gradient(to right, #020617, #0f172a)",
-          boxShadow: "0 2px 15px rgba(0,0,0,0.2)",
+          background: "rgba(255,255,255,0.05)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
         }}
       >
         <div className="container-fluid">
-          <h2 className="text-white fw-bold m-0">VIP Engineer 🚀</h2>
+          <h2 className="fw-bold m-0">VIP Engineer 🚀</h2>
 
-          <div>
-            <Link
-              to="/login"
-              className="btn btn-warning fw-bold me-2"
-              style={{
-                borderRadius: "12px",
-              }}
-            >
-              Login
-            </Link>
+          <div className="d-flex gap-3 flex-wrap">
+            {role === "admin" && (
+              <>
+                <button
+                  className="btn btn-warning fw-bold"
+                  onClick={() => navigate("/add-note")}
+                >
+                  Add Note ➕
+                </button>
 
-            <Link
-              to="/signup"
-              className="btn btn-primary fw-bold"
-              style={{
-                borderRadius: "12px",
-              }}
+                <button
+                  className="btn btn-info fw-bold"
+                  onClick={() => navigate("/admin-requests")}
+                >
+                  Requests 💳
+                </button>
+              </>
+            )}
+
+            <button
+              className="btn btn-light fw-bold"
+              onClick={() => navigate("/my-purchases")}
             >
-              Signup
-            </Link>
+              My Purchases 📚
+            </button>
+
+            <button
+              className="btn btn-light fw-bold"
+              onClick={() => navigate("/profile")}
+            >
+              Profile 👤
+            </button>
+
+            <button className="btn btn-danger fw-bold" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* HERO */}
-
-      <div className="container text-center py-5">
-        <h1
-          className="fw-bold"
-          style={{
-            fontSize: "75px",
-            color: "#020617",
-            marginTop: "40px",
-          }}
-        >
-          VIP Engineer
-        </h1>
-
-        <h2
-          className="fw-bold"
-          style={{
-            fontSize: "50px",
-            color: "#1e293b",
-            marginTop: "10px",
-          }}
-        >
-          Notes For Real Engineers 😎
-        </h2>
-
-        <div
-          style={{
-            fontSize: "90px",
-            marginTop: "10px",
-          }}
-        >
-          📚🚀💻
-        </div>
-
-        <p
-          className="mx-auto mt-4"
-          style={{
-            maxWidth: "900px",
-            fontSize: "24px",
-            color: "#475569",
-            lineHeight: "42px",
-          }}
-        >
-          Placement focused notes, handwritten PDFs, viva preparation, DSA
-          tricks and quick revision notes specially designed for engineering
-          students 🔥
-        </p>
-
-        {/* TAGS */}
-
-        <div className="mt-5">
-          <span className="badge bg-dark p-3 fs-5 me-3">DSA</span>
-
-          <span className="badge bg-primary p-3 fs-5 me-3">DBMS</span>
-
-          <span className="badge bg-success p-3 fs-5 me-3">CN</span>
-
-          <span className="badge bg-danger p-3 fs-5 me-3">OS</span>
-
-          <span className="badge bg-warning text-dark p-3 fs-5">AI/ML</span>
-        </div>
-
-        {/* CTA */}
-
-        <div className="mt-5">
-          <Link
-            to="/signup"
-            className="btn btn-primary btn-lg px-5 py-3 fw-bold me-3"
+      <div className="container py-5">
+        <div className="text-center mb-5">
+          <h1
+            className="fw-bold"
             style={{
-              borderRadius: "16px",
+              fontSize: "65px",
             }}
           >
-            Get Started 🚀
-          </Link>
+            Premium Engineering Notes 📚
+          </h1>
 
-          <Link
-            to="/login"
-            className="btn btn-dark btn-lg px-5 py-3 fw-bold"
+          <p
+            className="mt-3"
             style={{
-              borderRadius: "16px",
+              color: "#cbd5e1",
+              fontSize: "20px",
             }}
           >
-            Login
-          </Link>
-        </div>
-
-        {/* STATS */}
-
-        <div className="row mt-5 g-4">
-          <div className="col-md-4">
-            <div
-              className="card border-0 shadow-lg p-4"
-              style={{
-                borderRadius: "20px",
-              }}
-            >
-              <h1 className="fw-bold text-primary">500+</h1>
-
-              <h5>Students</h5>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="card border-0 shadow-lg p-4"
-              style={{
-                borderRadius: "20px",
-              }}
-            >
-              <h1 className="fw-bold text-success">100+</h1>
-
-              <h5>Premium PDFs</h5>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="card border-0 shadow-lg p-4"
-              style={{
-                borderRadius: "20px",
-              }}
-            >
-              <h1 className="fw-bold text-danger">24/7</h1>
-
-              <h5>Exam Support</h5>
-            </div>
-          </div>
-        </div>
-
-        {/* FREE NOTES */}
-
-        <div className="mt-5">
-          <h1 className="fw-bold">Free Notes 📖</h1>
-
-          <p className="text-secondary fs-5">
-            Free sample notes for every student
+            Unlock premium handwritten notes 🚀
           </p>
+        </div>
 
-          <div className="row mt-4 g-4">
-            {freeNotes.map((note, index) => (
-              <div className="col-md-4" key={index}>
+        <div className="row g-4">
+          {notes.map((note) => {
+            const status = getPurchaseStatus(note._id);
+
+            return (
+              <div className="col-lg-4 col-md-6" key={note._id}>
                 <div
-                  className="card border-0 shadow-lg h-100"
+                  className="h-100 p-4"
                   style={{
-                    borderRadius: "22px",
-                    overflow: "hidden",
+                    background: "rgba(255,255,255,0.08)",
+                    borderRadius: "28px",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
                   <div
+                    className="mb-4"
                     style={{
-                      height: "10px",
-                      background: "linear-gradient(to right, #22c55e, #16a34a)",
-                    }}
-                  ></div>
-
-                  <div className="card-body p-4">
-                    <div style={{ fontSize: "50px" }}>{note.emoji}</div>
-
-                    <h3 className="fw-bold mt-3">{note.title}</h3>
-
-                    <p className="text-secondary">{note.desc}</p>
-
-                    <h4 className="fw-bold text-success">{note.price}</h4>
-
-                    <button
-                      className="btn btn-success w-100 fw-bold mt-3"
-                      style={{
-                        borderRadius: "14px",
-                        padding: "12px",
-                      }}
-                    >
-                      View Free 🚀
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* PREMIUM NOTES */}
-
-        <div className="mt-5">
-          <h1 className="fw-bold">Premium Notes 🔥</h1>
-
-          <p className="text-secondary fs-5">
-            High quality premium handwritten notes
-          </p>
-
-          <div className="row mt-4 g-4">
-            {premiumNotes.map((note, index) => (
-              <div className="col-md-4" key={index}>
-                <div
-                  className="card border-0 shadow-lg h-100"
-                  style={{
-                    borderRadius: "22px",
-                    overflow: "hidden",
-                    position: "relative",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "10px",
-                      background: "linear-gradient(to right, #2563eb, #7c3aed)",
-                    }}
-                  ></div>
-
-                  <span
-                    className="badge bg-warning text-dark"
-                    style={{
-                      position: "absolute",
-                      top: "18px",
-                      right: "18px",
-                      padding: "10px",
-                      fontSize: "14px",
+                      fontSize: "50px",
                     }}
                   >
-                    PREMIUM 🔒
-                  </span>
+                    📘
+                  </div>
 
-                  <div className="card-body p-4">
-                    <div
-                      style={{
-                        fontSize: "50px",
-                        filter: "blur(1px)",
-                      }}
-                    >
-                      {note.emoji}
-                    </div>
+                  <h3 className="fw-bold">{note.title}</h3>
 
-                    <h3 className="fw-bold mt-3">{note.title}</h3>
+                  <p
+                    style={{
+                      color: "#cbd5e1",
+                      minHeight: "80px",
+                      marginTop: "15px",
+                    }}
+                  >
+                    {note.description}
+                  </p>
 
-                    <p className="text-secondary">{note.desc}</p>
+                  <h2
+                    className="fw-bold mt-3"
+                    style={{
+                      color: "#4ade80",
+                    }}
+                  >
+                    ₹{note.price}
+                  </h2>
 
-                    <h4
-                      className="fw-bold"
-                      style={{
-                        color: "#2563eb",
-                      }}
-                    >
-                      {note.price}
-                    </h4>
+                  <div className="mt-4">
+                    {role === "admin" && (
+                      <button
+                        className="btn btn-danger w-100 fw-bold mb-3"
+                        onClick={() => deleteNote(note._id)}
+                      >
+                        Delete Note 🗑️
+                      </button>
+                    )}
 
-                    <button
-                      onClick={handlePremiumClick}
-                      className="btn btn-dark w-100 fw-bold mt-3"
-                      style={{
-                        borderRadius: "14px",
-                        padding: "12px",
-                      }}
-                    >
-                      View Premium 🔒
-                    </button>
+                    {!status && (
+                      <button
+                        className="btn w-100 fw-bold"
+                        style={{
+                          background:
+                            "linear-gradient(to right, #3b82f6, #8b5cf6)",
+                          color: "white",
+                          border: "none",
+                        }}
+                        onClick={() =>
+                          navigate("/payment", {
+                            state: note,
+                          })
+                        }
+                      >
+                        Buy Now 🚀
+                      </button>
+                    )}
+
+                    {status === "pending" && (
+                      <button
+                        className="btn btn-warning w-100 fw-bold"
+                        disabled
+                      >
+                        Pending Approval ⏳
+                      </button>
+                    )}
+
+                    {status === "approved" && (
+                      <button
+                        className="btn btn-success w-100 fw-bold"
+                        onClick={() => viewPDF(note._id)}
+                      >
+                        View PDF 📄
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
+
+        {notes.length === 0 && (
+          <div className="text-center mt-5">
+            <h3
+              style={{
+                color: "#cbd5e1",
+              }}
+            >
+              No Notes Available 😔
+            </h3>
+          </div>
+        )}
       </div>
-
-      {/* FOOTER */}
-
-      <footer
-        className="text-center text-white py-4 mt-5"
-        style={{
-          background: "linear-gradient(to right, #020617, #0f172a)",
-        }}
-      >
-        <h5 className="fw-bold">VIP Engineer © 2026</h5>
-
-        <p className="m-0 text-light">Built For Engineers ❤️</p>
-      </footer>
     </div>
   );
 }
