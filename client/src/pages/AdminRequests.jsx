@@ -80,7 +80,11 @@ export default function AdminRequests() {
   const getScreenshotUrl = (screenshot) => {
     if (!screenshot) return "";
 
-    return `https://vip-engineer.onrender.com/screenshots/${screenshot}`;
+    if (screenshot.startsWith("http")) {
+      return screenshot;
+    }
+
+    return `https://vip-engineer.onrender.com${screenshot}`;
   };
 
   return (

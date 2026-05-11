@@ -313,7 +313,7 @@ app.post(
         userId: req.user.id,
         noteId,
         transactionId,
-        screenshot: req.file.filename,
+        screenshot: `/screenshots/${req.file.filename}`,
         paymentStatus: "pending",
       });
 
