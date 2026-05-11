@@ -12,3 +12,4 @@ npm run dev
 
 # VIP Engineer
 AI powered notes marketplace
+Built using MERN Stack
