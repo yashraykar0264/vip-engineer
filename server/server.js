@@ -32,7 +32,7 @@ connectDB();
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://vip-engineer.vercel.app"],
-   // methods: ["GET", "POST", "PUT", "DELETE"],
+    // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
@@ -65,6 +65,8 @@ const storage = multer.diskStorage({
 // SCREENSHOT STORAGE
 // ================================
 
+// SCREENSHOT STORAGE
+
 const screenshotStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "screenshots/");
@@ -73,6 +75,10 @@ const screenshotStorage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
   },
+});
+
+const screenshotUpload = multer({
+  storage: screenshotStorage,
 });
 
 // ================================
