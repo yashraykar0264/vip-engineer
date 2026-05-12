@@ -229,7 +229,7 @@ app.post(
 
   async (req, res) => {
     try {
-      const { title, description, price } = req.body;
+      const { title, description, price, subject } = req.body;
 
       if (!req.file) {
         return res.status(400).json({
@@ -241,6 +241,7 @@ app.post(
         title,
         description,
         price,
+        subject,
         pdf: `/uploads/${req.file.filename}`,
       });
 

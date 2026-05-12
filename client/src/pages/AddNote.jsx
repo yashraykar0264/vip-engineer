@@ -9,6 +9,8 @@ export default function AddNote() {
 
   const [description, setDescription] = useState("");
 
+  const [subject, setSubject] = useState("DSA");
+
   const [price, setPrice] = useState("");
 
   const [pdf, setPdf] = useState(null);
@@ -17,8 +19,6 @@ export default function AddNote() {
 
   useEffect(() => {
     const role = localStorage.getItem("role");
-
-    // ADMIN CHECK
 
     if (role !== "admin") {
       alert("Access Denied");
@@ -31,51 +31,24 @@ export default function AddNote() {
     try {
       const token = localStorage.getItem("token");
 
-      // FORM DATA
-
       const formData = new FormData();
 
-      formData.append(
-        "title",
+      formData.append("title", title);
 
-        title,
-      );
+      formData.append("description", description);
 
-      formData.append(
-        "description",
+      formData.append("subject", subject);
 
-        description,
-      );
+      formData.append("price", price);
 
-      formData.append(
-        "price",
+      formData.append("pdf", pdf);
 
-        price,
-      );
-
-      formData.append(
-        "pdf",
-
-        pdf,
-      );
-
-      // API REQUEST
-
-      const response = await API.post(
-        "/add-note",
-
-        formData,
-
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-
-            "Content-Type": "multipart/form-data",
-          },
+      const response = await API.post("/add-note", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-      );
-
-      console.log(response.data);
+      });
 
       alert(response.data.message);
 
@@ -91,12 +64,9 @@ export default function AddNote() {
     <div
       style={{
         minHeight: "100vh",
-
         background: "linear-gradient(to right, #f1f5f9, #e2e8f0)",
       }}
     >
-      {/* NAVBAR */}
-
       <nav
         className="navbar navbar-dark px-4"
         style={{
@@ -106,14 +76,11 @@ export default function AddNote() {
         <h2 className="text-white fw-bold">VIP Engineer 🚀</h2>
       </nav>
 
-      {/* FORM */}
-
       <div className="container py-5">
         <div
           className="col-md-5 mx-auto card p-4 border-0"
           style={{
             borderRadius: "20px",
-
             boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
           }}
         >
@@ -134,6 +101,26 @@ export default function AddNote() {
             onChange={(e) => setDescription(e.target.value)}
           />
 
+          {/* SUBJECT */}
+
+          <select
+            className="form-select mb-3"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+          >
+            <option value="DSA">DSA</option>
+
+            <option value="DBMS">DBMS</option>
+
+            <option value="CN">CN</option>
+
+            <option value="OS">OS</option>
+
+            <option value="AI/ML">AI/ML</option>
+
+            <option value="JAVA">JAVA</option>
+          </select>
+
           <input
             type="number"
             placeholder="Enter price"
@@ -141,8 +128,6 @@ export default function AddNote() {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
-
-          {/* PDF INPUT */}
 
           <input
             type="file"

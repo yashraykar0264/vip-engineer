@@ -11,6 +11,11 @@ const noteSchema = new mongoose.Schema({
     required: true,
   },
 
+  subject: {
+    type: String,
+    required: true,
+  },
+
   price: {
     type: Number,
     required: true,
@@ -27,8 +32,4 @@ const noteSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model(
-  "Note",
-
-  noteSchema,
-);
+module.exports = mongoose.model("Note", noteSchema);
