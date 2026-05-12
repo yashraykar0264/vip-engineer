@@ -11,6 +11,8 @@ export default function SubjectNotes() {
 
   const [notes, setNotes] = useState([]);
 
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     fetchNotes();
   }, [name]);
@@ -43,6 +45,24 @@ export default function SubjectNotes() {
     });
   };
 
+  // FREE NOTES
+
+  const freeNotes = notes.filter((note) => note.price === 0);
+
+  // PREMIUM NOTES
+
+  const premiumNotes = notes.filter((note) => note.price > 0);
+
+  // SEARCH FILTER
+
+  const filteredFree = freeNotes.filter((note) =>
+    note.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const filteredPremium = premiumNotes.filter((note) =>
+    note.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <div
       style={{
@@ -65,9 +85,9 @@ export default function SubjectNotes() {
         </button>
       </nav>
 
-      {/* HEADER */}
-
       <div className="container py-5">
+        {/* HEADER */}
+
         <div className="text-center mb-5">
           <h1
             className="fw-bold"
@@ -79,65 +99,140 @@ export default function SubjectNotes() {
           </h1>
 
           <p className="text-secondary fs-4 mt-3">
-            Premium handwritten notes and PDFs 🚀
+            Placement focused notes and PDFs 🚀
           </p>
         </div>
 
-        {/* NOTES */}
+        {/* SEARCH */}
 
-        <div className="row g-4">
-          {notes.map((note) => (
-            <div className="col-md-4" key={note._id}>
-              <div
-                className="card border-0 shadow-lg h-100"
-                style={{
-                  borderRadius: "24px",
-                  overflow: "hidden",
-                }}
-              >
+        <div className="mb-5">
+          <input
+            type="text"
+            placeholder="🔍 Search Notes..."
+            className="form-control p-3 shadow-sm"
+            style={{
+              borderRadius: "16px",
+              fontSize: "18px",
+            }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {/* FREE NOTES */}
+
+        <div className="mb-5">
+          <h2 className="fw-bold mb-4 text-success">🆓 Free Notes</h2>
+
+          <div className="row g-4">
+            {filteredFree.map((note) => (
+              <div className="col-md-4" key={note._id}>
                 <div
+                  className="card border-0 shadow-lg h-100"
                   style={{
-                    height: "10px",
-                    background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                    borderRadius: "24px",
                   }}
-                ></div>
-
-                <div className="card-body p-4">
+                >
                   <div
                     style={{
-                      fontSize: "60px",
+                      height: "10px",
+                      background: "linear-gradient(to right, #22c55e, #16a34a)",
                     }}
-                  >
-                    📘
+                  ></div>
+
+                  <div className="card-body p-4">
+                    <div
+                      style={{
+                        fontSize: "55px",
+                      }}
+                    >
+                      📖
+                    </div>
+
+                    <h3 className="fw-bold mt-3">{note.title}</h3>
+
+                    <p className="text-secondary mt-3">{note.description}</p>
+
+                    <h4 className="fw-bold text-success mt-3">FREE</h4>
+
+                    <a
+                      href={`https://vip-engineer.onrender.com${note.pdf}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-success w-100 fw-bold mt-4"
+                      style={{
+                        borderRadius: "14px",
+                        padding: "12px",
+                      }}
+                    >
+                      View Free 🚀
+                    </a>
                   </div>
-
-                  <h3 className="fw-bold mt-3">{note.title}</h3>
-
-                  <p className="text-secondary mt-3">{note.description}</p>
-
-                  <h4
-                    className="fw-bold mt-4"
-                    style={{
-                      color: "#2563eb",
-                    }}
-                  >
-                    ₹{note.price}
-                  </h4>
-
-                  <button
-                    className="btn btn-dark w-100 fw-bold mt-4"
-                    style={{
-                      borderRadius: "14px",
-                      padding: "12px",
-                    }}
-                    onClick={() => handlePremiumClick(note)}
-                  >
-                    Buy Now 🚀
-                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        {/* PREMIUM NOTES */}
+
+        <div className="mb-5">
+          <h2 className="fw-bold mb-4 text-primary">🔒 Premium Notes</h2>
+
+          <div className="row g-4">
+            {filteredPremium.map((note) => (
+              <div className="col-md-4" key={note._id}>
+                <div
+                  className="card border-0 shadow-lg h-100"
+                  style={{
+                    borderRadius: "24px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "10px",
+                      background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                    }}
+                  ></div>
+
+                  <div className="card-body p-4">
+                    <div
+                      style={{
+                        fontSize: "55px",
+                      }}
+                    >
+                      📘
+                    </div>
+
+                    <h3 className="fw-bold mt-3">{note.title}</h3>
+
+                    <p className="text-secondary mt-3">{note.description}</p>
+
+                    <h4
+                      className="fw-bold mt-3"
+                      style={{
+                        color: "#2563eb",
+                      }}
+                    >
+                      ₹{note.price}
+                    </h4>
+
+                    <button
+                      className="btn btn-dark w-100 fw-bold mt-4"
+                      style={{
+                        borderRadius: "14px",
+                        padding: "12px",
+                      }}
+                      onClick={() => handlePremiumClick(note)}
+                    >
+                      Buy Premium 🔒
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* EMPTY */}
