@@ -146,7 +146,7 @@ export default function AddNote() {
 
             <option value="OS">OS</option>
 
-            <option value="AI/ML">AI/ML</option>
+            <option value="AI-ML">AI-ML</option>
 
             <option value="JAVA">JAVA</option>
           </select>

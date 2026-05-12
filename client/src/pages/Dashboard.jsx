@@ -7,6 +7,10 @@ import API from "../services/api";
 export default function Dashboard() {
   const [notes, setNotes] = useState([]);
 
+  const [folders, setFolders] = useState([]);
+
+  const [newFolder, setNewFolder] = useState("");
+
   const [search, setSearch] = useState("");
 
   const navigate = useNavigate();
@@ -22,7 +26,11 @@ export default function Dashboard() {
     }
 
     fetchNotes();
+
+    fetchFolders();
   }, []);
+
+  // FETCH NOTES
 
   const fetchNotes = async () => {
     try {
@@ -34,32 +42,86 @@ export default function Dashboard() {
     }
   };
 
+  // FETCH FOLDERS
+
+  const fetchFolders = async () => {
+    try {
+      const response = await API.get("/folders");
+
+      setFolders(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // CREATE FOLDER
+
+  const handleCreateFolder = async () => {
+    try {
+      if (!newFolder) {
+        return alert("Enter Folder Name");
+      }
+
+      const token = localStorage.getItem("token");
+
+      const response = await API.post(
+        "/create-folder",
+        {
+          name: newFolder,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      alert(response.data.message);
+
+      setNewFolder("");
+
+      fetchFolders();
+    } catch (error) {
+      console.log(error);
+
+      alert(error.response?.data?.message || "Failed To Create Folder");
+    }
+  };
+
+  // DELETE FOLDER
+
+  const handleDeleteFolder = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await API.delete(`/delete-folder/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert(response.data.message);
+
+      fetchFolders();
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed To Delete Folder");
+    }
+  };
+
+  // LOGOUT
+
   const handleLogout = () => {
     localStorage.clear();
 
     navigate("/");
   };
 
-  // GROUP SUBJECTS
+  // FILTERED FOLDERS
 
-  const groupedNotes = notes.reduce((acc, note) => {
-    const subject = note.subject || "Other";
-
-    if (!acc[subject]) {
-      acc[subject] = [];
-    }
-
-    acc[subject].push(note);
-
-    return acc;
-  }, {});
-
-  const subjects = Object.keys(groupedNotes);
-
-  // SEARCH SUBJECTS
-
-  const filteredSubjects = subjects.filter((subject) =>
-    subject.toLowerCase().includes(search.toLowerCase()),
+  const filteredFolders = folders.filter((folder) =>
+    folder.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   // STATS
@@ -158,11 +220,10 @@ export default function Dashboard() {
         <div className="row g-4 mb-5">
           <div className="col-md-4">
             <div
-              className="p-4"
+              className="p-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.08)",
                 borderRadius: "25px",
-                textAlign: "center",
               }}
             >
               <h1>📚</h1>
@@ -175,11 +236,10 @@ export default function Dashboard() {
 
           <div className="col-md-4">
             <div
-              className="p-4"
+              className="p-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.08)",
                 borderRadius: "25px",
-                textAlign: "center",
               }}
             >
               <h1>🆓</h1>
@@ -192,11 +252,10 @@ export default function Dashboard() {
 
           <div className="col-md-4">
             <div
-              className="p-4"
+              className="p-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.08)",
                 borderRadius: "25px",
-                textAlign: "center",
               }}
             >
               <h1>🔥</h1>
@@ -208,12 +267,43 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* ADMIN FOLDER PANEL */}
+
+        {role === "admin" && (
+          <div
+            className="p-4 mb-5"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              borderRadius: "25px",
+            }}
+          >
+            <h2 className="fw-bold mb-4">📂 Folder Management</h2>
+
+            <div className="d-flex gap-3">
+              <input
+                type="text"
+                placeholder="Enter New Folder Name"
+                className="form-control"
+                value={newFolder}
+                onChange={(e) => setNewFolder(e.target.value)}
+              />
+
+              <button
+                className="btn btn-success fw-bold"
+                onClick={handleCreateFolder}
+              >
+                Create 🚀
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* SEARCH */}
 
         <div className="mb-5">
           <input
             type="text"
-            placeholder="🔍 Search Subjects..."
+            placeholder="🔍 Search Folders..."
             className="form-control p-3"
             style={{
               borderRadius: "18px",
@@ -224,38 +314,13 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* TRENDING */}
-
-        <div className="mb-5">
-          <h2 className="fw-bold mb-4">🔥 Trending Subjects</h2>
-
-          <div className="d-flex flex-wrap gap-3">
-            {subjects.slice(0, 5).map((subject) => (
-              <button
-                key={subject}
-                className="btn btn-warning fw-bold"
-                style={{
-                  borderRadius: "14px",
-                  padding: "10px 18px",
-                }}
-                onClick={() => navigate(`/subject/${subject}`)}
-              >
-                {subject}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* SUBJECT FOLDERS */}
+        {/* FOLDERS */}
 
         <div className="row g-4">
-          {filteredSubjects.map((subject) => (
-            <div className="col-lg-4 col-md-6" key={subject}>
+          {filteredFolders.map((folder) => (
+            <div className="col-lg-4 col-md-6" key={folder._id}>
               <div
-                onClick={() => navigate(`/subject/${subject}`)}
                 style={{
-                  cursor: "pointer",
-
                   background: "rgba(255,255,255,0.08)",
 
                   borderRadius: "30px",
@@ -265,8 +330,6 @@ export default function Dashboard() {
                   border: "1px solid rgba(255,255,255,0.1)",
 
                   backdropFilter: "blur(10px)",
-
-                  transition: "0.3s",
 
                   height: "100%",
                 }}
@@ -285,42 +348,30 @@ export default function Dashboard() {
                     fontSize: "40px",
                   }}
                 >
-                  {subject}
+                  {folder.name}
                 </h1>
 
-                <p
-                  style={{
-                    color: "#cbd5e1",
-
-                    marginTop: "15px",
-
-                    fontSize: "18px",
-                  }}
-                >
-                  {groupedNotes[subject].length} Notes Available
-                </p>
-
-                <div className="d-flex gap-2 mt-3">
-                  <span className="badge bg-success">
-                    {groupedNotes[subject].filter((n) => n.price === 0).length}{" "}
-                    Free
-                  </span>
-
-                  <span className="badge bg-danger">
-                    {groupedNotes[subject].filter((n) => n.price > 0).length}{" "}
-                    Premium
-                  </span>
-                </div>
-
                 <button
-                  className="btn btn-light fw-bold mt-4"
+                  className="btn btn-light fw-bold mt-4 w-100"
                   style={{
                     borderRadius: "14px",
-                    padding: "10px 20px",
                   }}
+                  onClick={() => navigate(`/subject/${folder.name}`)}
                 >
                   Open Folder 🚀
                 </button>
+
+                {role === "admin" && (
+                  <button
+                    className="btn btn-danger fw-bold mt-3 w-100"
+                    style={{
+                      borderRadius: "14px",
+                    }}
+                    onClick={() => handleDeleteFolder(folder._id)}
+                  >
+                    Delete Folder 🗑️
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -328,14 +379,14 @@ export default function Dashboard() {
 
         {/* EMPTY */}
 
-        {filteredSubjects.length === 0 && (
+        {filteredFolders.length === 0 && (
           <div className="text-center mt-5">
             <h3
               style={{
                 color: "#cbd5e1",
               }}
             >
-              No Subjects Found 😔
+              No Folders Found 😔
             </h3>
           </div>
         )}
