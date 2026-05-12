@@ -21,7 +21,7 @@ export default function SubjectNotes() {
     try {
       const response = await API.get("/notes");
 
-      const filtered = response.data.filter((note) => note.subject === name);
+      const filtered = response.data.filter((note) => note.folder === name);
 
       setNotes(filtered);
     } catch (error) {
