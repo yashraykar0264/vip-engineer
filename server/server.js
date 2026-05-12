@@ -16,6 +16,7 @@ const adminMiddleware = require("./middleware/adminMiddleware");
 const User = require("./models/User");
 const Note = require("./models/Note");
 const Purchase = require("./models/Purchase");
+const Folder = require("./models/Folder");
 
 const app = express();
 
@@ -229,7 +230,7 @@ app.post(
 
   async (req, res) => {
     try {
-      const { title, description, price, subject } = req.body;
+      const { title, description, price, subject, folder } = req.body;
 
       if (!req.file) {
         return res.status(400).json({
@@ -242,6 +243,7 @@ app.post(
         description,
         price,
         subject,
+        folder,
         pdf: `/uploads/${req.file.filename}`,
       });
 
@@ -255,6 +257,108 @@ app.post(
 
       res.status(500).json({
         message: "Failed To Add Note",
+      });
+    }
+  },
+);
+
+// ================================
+// CREATE FOLDER
+// ================================
+
+app.post(
+  "/create-folder",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      const { name } = req.body;
+
+      const existingFolder = await Folder.findOne({
+        name,
+      });
+
+      if (existingFolder) {
+        return res.status(400).json({
+          message: "Folder Already Exists",
+        });
+      }
+
+      const newFolder = new Folder({
+        name,
+      });
+
+      await newFolder.save();
+
+      res.json({
+        message: "Folder Created Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Create Folder",
+      });
+    }
+  },
+);
+
+// ================================
+// GET FOLDERS
+// ================================
+
+app.get(
+  "/folders",
+
+  async (req, res) => {
+    try {
+      const folders = await Folder.find();
+
+      res.json(folders);
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Fetch Folders",
+      });
+    }
+  },
+);
+
+// ================================
+// DELETE FOLDER
+// ================================
+
+app.delete(
+  "/delete-folder/:id",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      const folder = await Folder.findById(req.params.id);
+
+      if (!folder) {
+        return res.status(404).json({
+          message: "Folder Not Found",
+        });
+      }
+
+      await Folder.findByIdAndDelete(req.params.id);
+
+      res.json({
+        message: "Folder Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Delete Folder",
       });
     }
   },

@@ -10,7 +10,9 @@ export default function AddNote() {
   const [description, setDescription] = useState("");
 
   const [subject, setSubject] = useState("DSA");
+  const [folder, setFolder] = useState("");
 
+  const [folders, setFolders] = useState([]);
   const [price, setPrice] = useState("");
 
   const [pdf, setPdf] = useState(null);
@@ -19,13 +21,27 @@ export default function AddNote() {
 
   useEffect(() => {
     const role = localStorage.getItem("role");
-
+    fetchFolders();
     if (role !== "admin") {
       alert("Access Denied");
 
       navigate("/");
     }
   }, []);
+
+  const fetchFolders = async () => {
+    try {
+      const response = await API.get("/folders");
+
+      setFolders(response.data);
+
+      if (response.data.length > 0) {
+        setFolder(response.data[0].name);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleAddNote = async () => {
     try {
@@ -42,6 +58,8 @@ export default function AddNote() {
       formData.append("price", price);
 
       formData.append("pdf", pdf);
+
+      formData.append("folder", folder);
 
       const response = await API.post("/add-note", formData, {
         headers: {
@@ -102,6 +120,18 @@ export default function AddNote() {
           />
 
           {/* SUBJECT */}
+
+          <select
+            className="form-select mb-3"
+            value={folder}
+            onChange={(e) => setFolder(e.target.value)}
+          >
+            {folders.map((f) => (
+              <option key={f._id} value={f.name}>
+                {f.name}
+              </option>
+            ))}
+          </select>
 
           <select
             className="form-select mb-3"

@@ -11,6 +11,11 @@ const noteSchema = new mongoose.Schema({
     required: true,
   },
 
+  folder: {
+    type: String,
+    required: true,
+  },
+
   subject: {
     type: String,
     required: true,

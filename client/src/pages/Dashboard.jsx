@@ -7,6 +7,8 @@ import API from "../services/api";
 export default function Dashboard() {
   const [notes, setNotes] = useState([]);
 
+  const [search, setSearch] = useState("");
+
   const navigate = useNavigate();
 
   const role = localStorage.getItem("role");
@@ -54,11 +56,23 @@ export default function Dashboard() {
 
   const subjects = Object.keys(groupedNotes);
 
+  // SEARCH SUBJECTS
+
+  const filteredSubjects = subjects.filter((subject) =>
+    subject.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  // STATS
+
+  const freeNotes = notes.filter((note) => note.price === 0).length;
+
+  const premiumNotes = notes.filter((note) => note.price > 0).length;
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #0f172a, #1e293b, #312e81)",
+        background: "linear-gradient(135deg, #020617, #0f172a, #312e81)",
         color: "white",
       }}
     >
@@ -115,45 +129,145 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      {/* HERO */}
-
       <div className="container py-5">
+        {/* HERO */}
+
         <div className="text-center mb-5">
           <h1
             className="fw-bold"
             style={{
-              fontSize: "65px",
+              fontSize: "70px",
             }}
           >
-            Premium Engineering Notes 📚
+            VIP Engineer 📚
           </h1>
 
           <p
             className="mt-3"
             style={{
               color: "#cbd5e1",
-              fontSize: "20px",
+              fontSize: "22px",
             }}
           >
-            Open Subject Folders & Explore Notes 🚀
+            Premium Notes Marketplace For Engineers 🚀
           </p>
+        </div>
+
+        {/* STATS */}
+
+        <div className="row g-4 mb-5">
+          <div className="col-md-4">
+            <div
+              className="p-4"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                borderRadius: "25px",
+                textAlign: "center",
+              }}
+            >
+              <h1>📚</h1>
+
+              <h2 className="fw-bold">{notes.length}</h2>
+
+              <p>Total Notes</p>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div
+              className="p-4"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                borderRadius: "25px",
+                textAlign: "center",
+              }}
+            >
+              <h1>🆓</h1>
+
+              <h2 className="fw-bold text-success">{freeNotes}</h2>
+
+              <p>Free Notes</p>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div
+              className="p-4"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                borderRadius: "25px",
+                textAlign: "center",
+              }}
+            >
+              <h1>🔥</h1>
+
+              <h2 className="fw-bold text-warning">{premiumNotes}</h2>
+
+              <p>Premium Notes</p>
+            </div>
+          </div>
+        </div>
+
+        {/* SEARCH */}
+
+        <div className="mb-5">
+          <input
+            type="text"
+            placeholder="🔍 Search Subjects..."
+            className="form-control p-3"
+            style={{
+              borderRadius: "18px",
+              fontSize: "18px",
+            }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {/* TRENDING */}
+
+        <div className="mb-5">
+          <h2 className="fw-bold mb-4">🔥 Trending Subjects</h2>
+
+          <div className="d-flex flex-wrap gap-3">
+            {subjects.slice(0, 5).map((subject) => (
+              <button
+                key={subject}
+                className="btn btn-warning fw-bold"
+                style={{
+                  borderRadius: "14px",
+                  padding: "10px 18px",
+                }}
+                onClick={() => navigate(`/subject/${subject}`)}
+              >
+                {subject}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* SUBJECT FOLDERS */}
 
         <div className="row g-4">
-          {subjects.map((subject) => (
+          {filteredSubjects.map((subject) => (
             <div className="col-lg-4 col-md-6" key={subject}>
               <div
                 onClick={() => navigate(`/subject/${subject}`)}
                 style={{
                   cursor: "pointer",
+
                   background: "rgba(255,255,255,0.08)",
+
                   borderRadius: "30px",
+
                   padding: "35px",
+
                   border: "1px solid rgba(255,255,255,0.1)",
+
                   backdropFilter: "blur(10px)",
+
                   transition: "0.3s",
+
                   height: "100%",
                 }}
               >
@@ -177,12 +291,26 @@ export default function Dashboard() {
                 <p
                   style={{
                     color: "#cbd5e1",
+
                     marginTop: "15px",
+
                     fontSize: "18px",
                   }}
                 >
                   {groupedNotes[subject].length} Notes Available
                 </p>
+
+                <div className="d-flex gap-2 mt-3">
+                  <span className="badge bg-success">
+                    {groupedNotes[subject].filter((n) => n.price === 0).length}{" "}
+                    Free
+                  </span>
+
+                  <span className="badge bg-danger">
+                    {groupedNotes[subject].filter((n) => n.price > 0).length}{" "}
+                    Premium
+                  </span>
+                </div>
 
                 <button
                   className="btn btn-light fw-bold mt-4"
@@ -200,14 +328,14 @@ export default function Dashboard() {
 
         {/* EMPTY */}
 
-        {subjects.length === 0 && (
+        {filteredSubjects.length === 0 && (
           <div className="text-center mt-5">
             <h3
               style={{
                 color: "#cbd5e1",
               }}
             >
-              No Subjects Available 😔
+              No Subjects Found 😔
             </h3>
           </div>
         )}
