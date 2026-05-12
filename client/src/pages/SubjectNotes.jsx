@@ -13,10 +13,14 @@ export default function SubjectNotes() {
 
   const [search, setSearch] = useState("");
 
+  const [purchases, setPurchases] = useState([]);
+
   const role = localStorage.getItem("role");
 
   useEffect(() => {
     fetchNotes();
+
+    fetchPurchases();
   }, [name]);
 
   // FETCH NOTES
@@ -31,6 +35,36 @@ export default function SubjectNotes() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // FETCH PURCHASES
+
+  const fetchPurchases = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const response = await API.get("/my-purchases", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setPurchases(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // CHECK PURCHASED
+
+  const isPurchased = (noteId) => {
+    return purchases.some(
+      (purchase) =>
+        purchase.noteId?._id === noteId &&
+        purchase.paymentStatus === "approved",
+    );
   };
 
   // BUY PREMIUM
@@ -366,17 +400,33 @@ export default function SubjectNotes() {
                       ₹{note.price}
                     </h2>
 
-                    <button
-                      className="btn btn-light w-100 fw-bold mt-4"
-                      style={{
-                        borderRadius: "14px",
+                    {isPurchased(note._id) ? (
+                      <a
+                        href={`https://vip-engineer.onrender.com/notes/view/${note._id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-success w-100 fw-bold mt-4"
+                        style={{
+                          borderRadius: "14px",
 
-                        padding: "12px",
-                      }}
-                      onClick={() => handlePremiumClick(note)}
-                    >
-                      Buy Premium 🚀
-                    </button>
+                          padding: "12px",
+                        }}
+                      >
+                        Open PDF 🚀
+                      </a>
+                    ) : (
+                      <button
+                        className="btn btn-light w-100 fw-bold mt-4"
+                        style={{
+                          borderRadius: "14px",
+
+                          padding: "12px",
+                        }}
+                        onClick={() => handlePremiumClick(note)}
+                      >
+                        Buy Premium 🚀
+                      </button>
+                    )}
 
                     {role === "admin" && (
                       <button
