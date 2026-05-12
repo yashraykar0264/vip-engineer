@@ -44,17 +44,13 @@ export default function MyPurchases() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await API.get(
-        `/notes/view/${noteId}`,
-
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-
-          responseType: "blob",
+      const response = await API.get(`/notes/view/${noteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+
+        responseType: "blob",
+      });
 
       const file = new Blob([response.data], {
         type: "application/pdf",
@@ -77,6 +73,20 @@ export default function MyPurchases() {
 
     navigate("/");
   };
+
+  // GROUP PURCHASES
+
+  const groupedPurchases = purchases.reduce((acc, purchase) => {
+    const subject = purchase.noteId?.subject || "Other";
+
+    if (!acc[subject]) {
+      acc[subject] = [];
+    }
+
+    acc[subject].push(purchase);
+
+    return acc;
+  }, {});
 
   return (
     <div
@@ -132,107 +142,114 @@ export default function MyPurchases() {
           </div>
         )}
 
-        {/* CARDS */}
+        {/* SUBJECT WISE */}
 
-        <div className="row g-4">
-          {purchases.map((purchase) => (
-            <div className="col-md-4" key={purchase._id}>
-              <div
-                className="card border-0 h-100"
-                style={{
-                  borderRadius: "24px",
+        {Object.keys(groupedPurchases).map((subject) => (
+          <div key={subject} className="mb-5">
+            <h2 className="fw-bold mb-4">📂 {subject}</h2>
 
-                  overflow: "hidden",
-
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-                }}
-              >
-                {/* TOP BAR */}
-
-                <div
-                  style={{
-                    height: "10px",
-
-                    background: "linear-gradient(to right, #2563eb, #7c3aed)",
-                  }}
-                ></div>
-
-                {/* BODY */}
-
-                <div className="card-body p-4 d-flex flex-column">
-                  <h3 className="fw-bold">{purchase.noteId?.title}</h3>
-
-                  <p
-                    className="text-secondary"
+            <div className="row g-4">
+              {groupedPurchases[subject].map((purchase) => (
+                <div className="col-md-4" key={purchase._id}>
+                  <div
+                    className="card border-0 h-100"
                     style={{
-                      minHeight: "80px",
+                      borderRadius: "24px",
+
+                      overflow: "hidden",
+
+                      boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
                     }}
                   >
-                    {purchase.noteId?.description}
-                  </p>
+                    {/* TOP BAR */}
 
-                  <h2
-                    className="fw-bold"
-                    style={{
-                      color: "#16a34a",
-                    }}
-                  >
-                    ₹{purchase.noteId?.price}
-                  </h2>
-
-                  {/* STATUS */}
-
-                  <div className="mt-3">
-                    <span
-                      className={`badge px-3 py-2 ${
-                        purchase.paymentStatus === "approved"
-                          ? "bg-success"
-                          : "bg-warning text-dark"
-                      }`}
+                    <div
                       style={{
-                        fontSize: "15px",
+                        height: "10px",
 
-                        borderRadius: "10px",
+                        background:
+                          "linear-gradient(to right, #2563eb, #7c3aed)",
                       }}
-                    >
-                      {purchase.paymentStatus.toUpperCase()}
-                    </span>
-                  </div>
+                    ></div>
 
-                  {/* BUTTON */}
+                    {/* BODY */}
 
-                  <div className="mt-auto">
-                    {purchase.paymentStatus === "approved" ? (
-                      <button
-                        className="btn btn-success w-100 fw-bold mt-4"
+                    <div className="card-body p-4 d-flex flex-column">
+                      <h3 className="fw-bold">{purchase.noteId?.title}</h3>
+
+                      <p
+                        className="text-secondary"
                         style={{
-                          padding: "12px",
-
-                          borderRadius: "14px",
-                        }}
-                        onClick={() => viewPDF(purchase.noteId._id)}
-                      >
-                        View PDF 📄
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-warning w-100 fw-bold mt-4"
-                        disabled
-                        style={{
-                          padding: "12px",
-
-                          borderRadius: "14px",
+                          minHeight: "80px",
                         }}
                       >
-                        Pending Approval ⏳
-                      </button>
-                    )}
+                        {purchase.noteId?.description}
+                      </p>
+
+                      <h2
+                        className="fw-bold"
+                        style={{
+                          color: "#16a34a",
+                        }}
+                      >
+                        ₹{purchase.noteId?.price}
+                      </h2>
+
+                      {/* STATUS */}
+
+                      <div className="mt-3">
+                        <span
+                          className={`badge px-3 py-2 ${
+                            purchase.paymentStatus === "approved"
+                              ? "bg-success"
+                              : "bg-warning text-dark"
+                          }`}
+                          style={{
+                            fontSize: "15px",
+
+                            borderRadius: "10px",
+                          }}
+                        >
+                          {purchase.paymentStatus.toUpperCase()}
+                        </span>
+                      </div>
+
+                      {/* BUTTON */}
+
+                      <div className="mt-auto">
+                        {purchase.paymentStatus === "approved" ? (
+                          <button
+                            className="btn btn-success w-100 fw-bold mt-4"
+                            style={{
+                              padding: "12px",
+
+                              borderRadius: "14px",
+                            }}
+                            onClick={() => viewPDF(purchase.noteId._id)}
+                          >
+                            View PDF 📄
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-warning w-100 fw-bold mt-4"
+                            disabled
+                            style={{
+                              padding: "12px",
+
+                              borderRadius: "14px",
+                            }}
+                          >
+                            Pending Approval ⏳
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
