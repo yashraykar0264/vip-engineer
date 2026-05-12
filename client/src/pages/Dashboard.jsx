@@ -9,6 +9,8 @@ export default function Dashboard() {
 
   const [folders, setFolders] = useState([]);
 
+  const [purchases, setPurchases] = useState([]);
+
   const [newFolder, setNewFolder] = useState("");
 
   const [search, setSearch] = useState("");
@@ -22,12 +24,15 @@ export default function Dashboard() {
 
     if (!token) {
       navigate("/");
+
       return;
     }
 
     fetchNotes();
 
     fetchFolders();
+
+    fetchPurchases();
   }, []);
 
   // FETCH NOTES
@@ -52,6 +57,34 @@ export default function Dashboard() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // FETCH PURCHASES
+
+  const fetchPurchases = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await API.get("/my-purchases", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setPurchases(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // CHECK PURCHASED
+
+  const isPurchased = (noteId) => {
+    return purchases.some(
+      (purchase) =>
+        purchase.noteId?._id === noteId &&
+        purchase.paymentStatus === "approved",
+    );
   };
 
   // CREATE FOLDER
@@ -103,6 +136,8 @@ export default function Dashboard() {
       alert(response.data.message);
 
       fetchFolders();
+
+      fetchNotes();
     } catch (error) {
       console.log(error);
 
@@ -134,7 +169,9 @@ export default function Dashboard() {
     <div
       style={{
         minHeight: "100vh",
+
         background: "linear-gradient(135deg, #020617, #0f172a, #312e81)",
+
         color: "white",
       }}
     >
@@ -144,7 +181,9 @@ export default function Dashboard() {
         className="navbar navbar-expand-lg px-4 py-3"
         style={{
           background: "rgba(255,255,255,0.05)",
+
           backdropFilter: "blur(12px)",
+
           borderBottom: "1px solid rgba(255,255,255,0.1)",
         }}
       >
@@ -198,7 +237,9 @@ export default function Dashboard() {
           <h1
             className="fw-bold"
             style={{
-              fontSize: "70px",
+              fontSize: "75px",
+
+              letterSpacing: "2px",
             }}
           >
             VIP Engineer 📚
@@ -208,6 +249,7 @@ export default function Dashboard() {
             className="mt-3"
             style={{
               color: "#cbd5e1",
+
               fontSize: "22px",
             }}
           >
@@ -223,10 +265,15 @@ export default function Dashboard() {
               className="p-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.08)",
-                borderRadius: "25px",
+
+                borderRadius: "30px",
+
+                backdropFilter: "blur(10px)",
+
+                border: "1px solid rgba(255,255,255,0.08)",
               }}
             >
-              <h1>📚</h1>
+              <h1 style={{ fontSize: "55px" }}>📚</h1>
 
               <h2 className="fw-bold">{notes.length}</h2>
 
@@ -239,10 +286,15 @@ export default function Dashboard() {
               className="p-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.08)",
-                borderRadius: "25px",
+
+                borderRadius: "30px",
+
+                backdropFilter: "blur(10px)",
+
+                border: "1px solid rgba(255,255,255,0.08)",
               }}
             >
-              <h1>🆓</h1>
+              <h1 style={{ fontSize: "55px" }}>🆓</h1>
 
               <h2 className="fw-bold text-success">{freeNotes}</h2>
 
@@ -255,10 +307,15 @@ export default function Dashboard() {
               className="p-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.08)",
-                borderRadius: "25px",
+
+                borderRadius: "30px",
+
+                backdropFilter: "blur(10px)",
+
+                border: "1px solid rgba(255,255,255,0.08)",
               }}
             >
-              <h1>🔥</h1>
+              <h1 style={{ fontSize: "55px" }}>🔥</h1>
 
               <h2 className="fw-bold text-warning">{premiumNotes}</h2>
 
@@ -267,14 +324,19 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ADMIN FOLDER PANEL */}
+        {/* ADMIN PANEL */}
 
         {role === "admin" && (
           <div
             className="p-4 mb-5"
             style={{
               background: "rgba(255,255,255,0.08)",
-              borderRadius: "25px",
+
+              borderRadius: "30px",
+
+              backdropFilter: "blur(10px)",
+
+              border: "1px solid rgba(255,255,255,0.08)",
             }}
           >
             <h2 className="fw-bold mb-4">📂 Folder Management</h2>
@@ -283,13 +345,23 @@ export default function Dashboard() {
               <input
                 type="text"
                 placeholder="Enter New Folder Name"
-                className="form-control"
+                className="form-control p-3"
+                style={{
+                  borderRadius: "16px",
+
+                  fontSize: "17px",
+                }}
                 value={newFolder}
                 onChange={(e) => setNewFolder(e.target.value)}
               />
 
               <button
                 className="btn btn-success fw-bold"
+                style={{
+                  borderRadius: "16px",
+
+                  padding: "14px 24px",
+                }}
                 onClick={handleCreateFolder}
               >
                 Create 🚀
@@ -306,7 +378,8 @@ export default function Dashboard() {
             placeholder="🔍 Search Folders..."
             className="form-control p-3"
             style={{
-              borderRadius: "18px",
+              borderRadius: "20px",
+
               fontSize: "18px",
             }}
             value={search}
@@ -317,77 +390,111 @@ export default function Dashboard() {
         {/* FOLDERS */}
 
         <div className="row g-4">
-          {filteredFolders.map((folder) => (
-            <div className="col-lg-4 col-md-6" key={folder._id}>
-              <div
-                style={{
-                  background: "rgba(255,255,255,0.08)",
+          {filteredFolders.map((folder) => {
+            const folderNotes = notes.filter(
+              (note) => note.folder === folder.name,
+            );
 
-                  borderRadius: "30px",
+            const purchasedCount = folderNotes.filter((note) =>
+              isPurchased(note._id),
+            ).length;
 
-                  padding: "35px",
-
-                  border: "1px solid rgba(255,255,255,0.1)",
-
-                  backdropFilter: "blur(10px)",
-
-                  height: "100%",
-                }}
-              >
+            return (
+              <div className="col-lg-4 col-md-6" key={folder._id}>
                 <div
                   style={{
-                    fontSize: "80px",
+                    background: "rgba(255,255,255,0.08)",
+
+                    borderRadius: "32px",
+
+                    padding: "35px",
+
+                    border: "1px solid rgba(255,255,255,0.1)",
+
+                    backdropFilter: "blur(12px)",
+
+                    height: "100%",
+
+                    transition: "0.3s",
                   }}
                 >
-                  📂
-                </div>
-
-                <h1
-                  className="fw-bold mt-3"
-                  style={{
-                    fontSize: "40px",
-                  }}
-                >
-                  {folder.name}
-                </h1>
-
-                <button
-                  className="btn btn-light fw-bold mt-4 w-100"
-                  style={{
-                    borderRadius: "14px",
-                  }}
-                  onClick={() => navigate(`/subject/${folder.name}`)}
-                >
-                  Open Folder 🚀
-                </button>
-
-                {role === "admin" && (
-                  <button
-                    className="btn btn-danger fw-bold mt-3 w-100"
+                  <div
                     style={{
-                      borderRadius: "14px",
+                      fontSize: "90px",
                     }}
-                    onClick={() => handleDeleteFolder(folder._id)}
                   >
-                    Delete Folder 🗑️
+                    📂
+                  </div>
+
+                  <h1
+                    className="fw-bold mt-3"
+                    style={{
+                      fontSize: "42px",
+                    }}
+                  >
+                    {folder.name}
+                  </h1>
+
+                  <div className="mt-4">
+                    <span className="badge bg-primary me-2 px-3 py-2">
+                      {folderNotes.length} Notes
+                    </span>
+
+                    <span className="badge bg-success px-3 py-2">
+                      {purchasedCount} Purchased
+                    </span>
+                  </div>
+
+                  <button
+                    className="btn fw-bold mt-4 w-100"
+                    style={{
+                      borderRadius: "16px",
+
+                      padding: "14px",
+
+                      background: "linear-gradient(to right, #2563eb, #7c3aed)",
+
+                      border: "none",
+
+                      color: "white",
+
+                      fontSize: "17px",
+                    }}
+                    onClick={() => navigate(`/subject/${folder.name}`)}
+                  >
+                    Open Folder 🚀
                   </button>
-                )}
+
+                  {role === "admin" && (
+                    <button
+                      className="btn btn-danger fw-bold mt-3 w-100"
+                      style={{
+                        borderRadius: "16px",
+
+                        padding: "14px",
+                      }}
+                      onClick={() => handleDeleteFolder(folder._id)}
+                    >
+                      Delete Folder 🗑️
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* EMPTY */}
 
         {filteredFolders.length === 0 && (
           <div className="text-center mt-5">
-            <h3
+            <h2
               style={{
                 color: "#cbd5e1",
               }}
             >
               No Folders Found 😔
-            </h3>
+            </h2>
           </div>
         )}
       </div>
