@@ -349,6 +349,10 @@ app.delete(
         });
       }
 
+      await Note.deleteMany({
+        folder: folder.name,
+      });
+
       await Folder.findByIdAndDelete(req.params.id);
 
       res.json({
