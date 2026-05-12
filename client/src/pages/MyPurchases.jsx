@@ -149,7 +149,7 @@ export default function MyPurchases() {
             <h2 className="fw-bold mb-4">📂 {folder}</h2>
 
             <div className="row g-4">
-              {groupedPurchases[folder].map((purchase) => (
+              {groupedPurchases[subject].map((purchase) => (
                 <div className="col-md-4" key={purchase._id}>
                   <div
                     className="card border-0 h-100"
