@@ -11,6 +11,7 @@ import MyPurchases from "./pages/MyPurchases";
 import Dashboard from "./pages/Dashboard";
 import AdminRequests from "./pages/AdminRequests";
 import AddNote from "./pages/AddNote";
+import SubjectNotes from "./pages/SubjectNotes";
 
 export default function App() {
   return (
@@ -32,6 +33,8 @@ export default function App() {
       <Route path="/my-purchases" element={<MyPurchases />} />
 
       <Route path="/profile" element={<Profile />} />
+
+      <Route path="/subject/:name" element={<SubjectNotes />} />
     </Routes>
   );
 }

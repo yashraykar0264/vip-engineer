@@ -158,16 +158,85 @@ export default function Home() {
 
         {/* TAGS */}
 
+        {/* SUBJECT FOLDERS */}
+
         <div className="mt-5">
-          <span className="badge bg-dark p-3 fs-5 me-3">DSA</span>
+          <h1 className="fw-bold mb-4">Explore Subjects 📂</h1>
 
-          <span className="badge bg-primary p-3 fs-5 me-3">DBMS</span>
+          <div className="row g-4 justify-content-center">
+            {[
+              {
+                name: "DSA",
+                emoji: "🔥",
+                color: "#0f172a",
+              },
 
-          <span className="badge bg-success p-3 fs-5 me-3">CN</span>
+              {
+                name: "DBMS",
+                emoji: "🗂️",
+                color: "#2563eb",
+              },
 
-          <span className="badge bg-danger p-3 fs-5 me-3">OS</span>
+              {
+                name: "CN",
+                emoji: "🌐",
+                color: "#16a34a",
+              },
 
-          <span className="badge bg-warning text-dark p-3 fs-5">AI/ML</span>
+              {
+                name: "OS",
+                emoji: "💻",
+                color: "#dc2626",
+              },
+
+              {
+                name: "AI/ML",
+                emoji: "🤖",
+                color: "#7c3aed",
+              },
+
+              {
+                name: "JAVA",
+                emoji: "☕",
+                color: "#ea580c",
+              },
+            ].map((subject, index) => (
+              <div className="col-md-4 col-lg-3" key={index}>
+                <div
+                  onClick={() => navigate(`/subject/${subject.name}`)}
+                  className="card border-0 shadow-lg h-100 text-white"
+                  style={{
+                    borderRadius: "24px",
+                    cursor: "pointer",
+                    background: subject.color,
+                    transition: "0.3s",
+                  }}
+                >
+                  <div className="card-body text-center p-5">
+                    <div
+                      style={{
+                        fontSize: "65px",
+                      }}
+                    >
+                      📂
+                    </div>
+
+                    <h2 className="fw-bold mt-3">{subject.name}</h2>
+
+                    <div
+                      style={{
+                        fontSize: "30px",
+                      }}
+                    >
+                      {subject.emoji}
+                    </div>
+
+                    <p className="mt-3">Open {subject.name} Notes</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* CTA */}
