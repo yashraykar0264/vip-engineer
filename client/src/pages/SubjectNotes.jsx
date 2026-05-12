@@ -80,8 +80,11 @@ export default function SubjectNotes() {
       >
         <h2 className="text-white fw-bold">VIP Engineer 🚀</h2>
 
-        <button className="btn btn-light fw-bold" onClick={() => navigate("/")}>
-          Back
+        <button
+          className="btn btn-light fw-bold"
+          onClick={() => navigate("/dashboard")}
+        >
+          Dashboard
         </button>
       </nav>
 
@@ -153,7 +156,15 @@ export default function SubjectNotes() {
 
                     <p className="text-secondary mt-3">{note.description}</p>
 
-                    <h4 className="fw-bold text-success mt-3">FREE</h4>
+                    <span
+                      className="badge bg-success px-3 py-2 mt-3"
+                      style={{
+                        fontSize: "16px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      🆓 FREE ACCESS
+                    </span>
 
                     <a
                       href={`https://vip-engineer.onrender.com${note.pdf}`}
@@ -165,7 +176,7 @@ export default function SubjectNotes() {
                         padding: "12px",
                       }}
                     >
-                      View Free 🚀
+                      Open Free PDF 🚀
                     </a>
                   </div>
                 </div>
@@ -208,6 +219,16 @@ export default function SubjectNotes() {
                     <h3 className="fw-bold mt-3">{note.title}</h3>
 
                     <p className="text-secondary mt-3">{note.description}</p>
+
+                    <span
+                      className="badge bg-danger px-3 py-2"
+                      style={{
+                        fontSize: "16px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      🔥 PREMIUM
+                    </span>
 
                     <h4
                       className="fw-bold mt-3"
