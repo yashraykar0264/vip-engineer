@@ -9,10 +9,10 @@ export default function AddNote() {
 
   const [description, setDescription] = useState("");
 
-  const [subject, setSubject] = useState("DSA");
   const [folder, setFolder] = useState("");
 
   const [folders, setFolders] = useState([]);
+
   const [price, setPrice] = useState("");
 
   const [pdf, setPdf] = useState(null);
@@ -21,13 +21,17 @@ export default function AddNote() {
 
   useEffect(() => {
     const role = localStorage.getItem("role");
+
     fetchFolders();
+
     if (role !== "admin") {
       alert("Access Denied");
 
       navigate("/");
     }
   }, []);
+
+  // FETCH FOLDERS
 
   const fetchFolders = async () => {
     try {
@@ -43,8 +47,14 @@ export default function AddNote() {
     }
   };
 
+  // ADD NOTE
+
   const handleAddNote = async () => {
     try {
+      if (!title || !description || !folder || !pdf) {
+        return alert("Please Fill All Fields");
+      }
+
       const token = localStorage.getItem("token");
 
       const formData = new FormData();
@@ -53,17 +63,16 @@ export default function AddNote() {
 
       formData.append("description", description);
 
-      formData.append("subject", subject);
+      formData.append("folder", folder);
 
-      formData.append("price", price);
+      formData.append("price", price || 0);
 
       formData.append("pdf", pdf);
-
-      formData.append("folder", folder);
 
       const response = await API.post("/add-note", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+
           "Content-Type": "multipart/form-data",
         },
       });
@@ -82,96 +91,170 @@ export default function AddNote() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to right, #f1f5f9, #e2e8f0)",
+
+        background: "linear-gradient(135deg, #020617, #0f172a, #312e81)",
+
+        padding: "40px 20px",
       }}
     >
+      {/* NAVBAR */}
+
       <nav
-        className="navbar navbar-dark px-4"
+        className="navbar navbar-dark px-4 py-3 mb-5"
         style={{
-          background: "linear-gradient(to right, #0f172a, #1e293b)",
+          background: "rgba(255,255,255,0.05)",
+
+          backdropFilter: "blur(10px)",
+
+          borderRadius: "20px",
+
+          border: "1px solid rgba(255,255,255,0.1)",
         }}
       >
         <h2 className="text-white fw-bold">VIP Engineer 🚀</h2>
+
+        <button
+          className="btn btn-light fw-bold"
+          onClick={() => navigate("/dashboard")}
+        >
+          Dashboard
+        </button>
       </nav>
 
-      <div className="container py-5">
-        <div
-          className="col-md-5 mx-auto card p-4 border-0"
-          style={{
-            borderRadius: "20px",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h2 className="text-center fw-bold mb-4">Add Premium Note 📚</h2>
+      {/* FORM */}
 
-          <input
-            type="text"
-            placeholder="Enter note title"
-            className="form-control mb-3"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-lg-6">
+            <div
+              style={{
+                background: "rgba(255,255,255,0.08)",
 
-          <textarea
-            placeholder="Enter description"
-            className="form-control mb-3"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+                borderRadius: "30px",
 
-          {/* SUBJECT */}
+                padding: "40px",
 
-          <select
-            className="form-select mb-3"
-            value={folder}
-            onChange={(e) => setFolder(e.target.value)}
-          >
-            {folders.map((f) => (
-              <option key={f._id} value={f.name}>
-                {f.name}
-              </option>
-            ))}
-          </select>
+                border: "1px solid rgba(255,255,255,0.1)",
 
-          <select
-            className="form-select mb-3"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          >
-            <option value="DSA">DSA</option>
+                backdropFilter: "blur(12px)",
 
-            <option value="DBMS">DBMS</option>
+                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+              }}
+            >
+              <div className="text-center mb-5">
+                <h1
+                  className="fw-bold text-white"
+                  style={{
+                    fontSize: "50px",
+                  }}
+                >
+                  Upload Notes 📚
+                </h1>
 
-            <option value="CN">CN</option>
+                <p
+                  style={{
+                    color: "#cbd5e1",
 
-            <option value="OS">OS</option>
+                    fontSize: "18px",
+                  }}
+                >
+                  Upload Premium & Free PDFs 🚀
+                </p>
+              </div>
 
-            <option value="AI-ML">AI-ML</option>
+              {/* TITLE */}
 
-            <option value="JAVA">JAVA</option>
-          </select>
+              <input
+                type="text"
+                placeholder="Enter Note Title"
+                className="form-control p-3 mb-4"
+                style={{
+                  borderRadius: "16px",
 
-          <input
-            type="number"
-            placeholder="Enter price"
-            className="form-control mb-3"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+                  fontSize: "17px",
+                }}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
 
-          <input
-            type="file"
-            className="form-control mb-4"
-            accept=".pdf"
-            onChange={(e) => setPdf(e.target.files[0])}
-          />
+              {/* DESCRIPTION */}
 
-          <button
-            className="btn btn-dark w-100 fw-bold"
-            onClick={handleAddNote}
-          >
-            Add Note 🚀
-          </button>
+              <textarea
+                placeholder="Enter Description"
+                className="form-control p-3 mb-4"
+                rows="4"
+                style={{
+                  borderRadius: "16px",
+
+                  fontSize: "17px",
+                }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+
+              {/* FOLDER */}
+
+              <select
+                className="form-select p-3 mb-4"
+                style={{
+                  borderRadius: "16px",
+
+                  fontSize: "17px",
+                }}
+                value={folder}
+                onChange={(e) => setFolder(e.target.value)}
+              >
+                {folders.map((f) => (
+                  <option key={f._id} value={f.name}>
+                    📂 {f.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* PRICE */}
+
+              <input
+                type="number"
+                placeholder="Enter Price (0 = Free)"
+                className="form-control p-3 mb-4"
+                style={{
+                  borderRadius: "16px",
+
+                  fontSize: "17px",
+                }}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+
+              {/* PDF */}
+
+              <input
+                type="file"
+                className="form-control p-3 mb-4"
+                accept=".pdf"
+                style={{
+                  borderRadius: "16px",
+                }}
+                onChange={(e) => setPdf(e.target.files[0])}
+              />
+
+              {/* BUTTON */}
+
+              <button
+                className="btn btn-light w-100 fw-bold"
+                style={{
+                  borderRadius: "16px",
+
+                  padding: "14px",
+
+                  fontSize: "18px",
+                }}
+                onClick={handleAddNote}
+              >
+                Upload Note 🚀
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
