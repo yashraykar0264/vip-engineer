@@ -16,10 +16,6 @@ const noteSchema = new mongoose.Schema({
     required: true,
   },
 
-  subject: {
-    type: String,
-    required: true,
-  },
 
   price: {
     type: Number,
