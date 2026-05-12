@@ -13,9 +13,13 @@ export default function SubjectNotes() {
 
   const [search, setSearch] = useState("");
 
+  const role = localStorage.getItem("role");
+
   useEffect(() => {
     fetchNotes();
   }, [name]);
+
+  // FETCH NOTES
 
   const fetchNotes = async () => {
     try {
@@ -28,6 +32,8 @@ export default function SubjectNotes() {
       console.log(error);
     }
   };
+
+  // BUY PREMIUM
 
   const handlePremiumClick = (note) => {
     const token = localStorage.getItem("token");
@@ -45,15 +51,37 @@ export default function SubjectNotes() {
     });
   };
 
-  // FREE NOTES
+  // DELETE NOTE
+
+  const handleDeleteNote = async (id) => {
+    try {
+      const confirmDelete = window.confirm("Delete This Note?");
+
+      if (!confirmDelete) return;
+
+      const token = localStorage.getItem("token");
+
+      const response = await API.delete(`/delete-note/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert(response.data.message);
+
+      fetchNotes();
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed To Delete Note");
+    }
+  };
+
+  // FILTERS
 
   const freeNotes = notes.filter((note) => note.price === 0);
 
-  // PREMIUM NOTES
-
   const premiumNotes = notes.filter((note) => note.price > 0);
-
-  // SEARCH FILTER
 
   const filteredFree = freeNotes.filter((note) =>
     note.title.toLowerCase().includes(search.toLowerCase()),
@@ -67,7 +95,10 @@ export default function SubjectNotes() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to right, #e2e8f0, #f8fafc)",
+
+        background: "linear-gradient(135deg, #020617, #0f172a, #312e81)",
+
+        color: "white",
       }}
     >
       {/* NAVBAR */}
@@ -75,10 +106,14 @@ export default function SubjectNotes() {
       <nav
         className="navbar navbar-dark px-4 py-3"
         style={{
-          background: "linear-gradient(to right, #020617, #0f172a)",
+          background: "rgba(255,255,255,0.05)",
+
+          backdropFilter: "blur(12px)",
+
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
         }}
       >
-        <h2 className="text-white fw-bold">VIP Engineer 🚀</h2>
+        <h2 className="fw-bold">VIP Engineer 🚀</h2>
 
         <button
           className="btn btn-light fw-bold"
@@ -98,12 +133,73 @@ export default function SubjectNotes() {
               fontSize: "65px",
             }}
           >
-            📂 {name} Notes
+            📂 {name}
           </h1>
 
-          <p className="text-secondary fs-4 mt-3">
-            Placement focused notes and PDFs 🚀
+          <p
+            style={{
+              color: "#cbd5e1",
+
+              fontSize: "20px",
+            }}
+          >
+            Premium Engineering Notes Marketplace 🚀
           </p>
+        </div>
+
+        {/* STATS */}
+
+        <div className="row g-4 mb-5">
+          <div className="col-md-4">
+            <div
+              className="p-4 text-center"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+
+                borderRadius: "25px",
+              }}
+            >
+              <h1>📚</h1>
+
+              <h2 className="fw-bold">{notes.length}</h2>
+
+              <p>Total Notes</p>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div
+              className="p-4 text-center"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+
+                borderRadius: "25px",
+              }}
+            >
+              <h1>🆓</h1>
+
+              <h2 className="fw-bold text-success">{freeNotes.length}</h2>
+
+              <p>Free Notes</p>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div
+              className="p-4 text-center"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+
+                borderRadius: "25px",
+              }}
+            >
+              <h1>🔥</h1>
+
+              <h2 className="fw-bold text-warning">{premiumNotes.length}</h2>
+
+              <p>Premium Notes</p>
+            </div>
+          </div>
         </div>
 
         {/* SEARCH */}
@@ -112,9 +208,10 @@ export default function SubjectNotes() {
           <input
             type="text"
             placeholder="🔍 Search Notes..."
-            className="form-control p-3 shadow-sm"
+            className="form-control p-3"
             style={{
-              borderRadius: "16px",
+              borderRadius: "18px",
+
               fontSize: "18px",
             }}
             value={search}
@@ -129,16 +226,25 @@ export default function SubjectNotes() {
 
           <div className="row g-4">
             {filteredFree.map((note) => (
-              <div className="col-md-4" key={note._id}>
+              <div className="col-lg-4 col-md-6" key={note._id}>
                 <div
                   className="card border-0 shadow-lg h-100"
                   style={{
-                    borderRadius: "24px",
+                    borderRadius: "30px",
+
+                    overflow: "hidden",
+
+                    background: "rgba(255,255,255,0.08)",
+
+                    backdropFilter: "blur(10px)",
+
+                    color: "white",
                   }}
                 >
                   <div
                     style={{
-                      height: "10px",
+                      height: "8px",
+
                       background: "linear-gradient(to right, #22c55e, #16a34a)",
                     }}
                   ></div>
@@ -146,7 +252,7 @@ export default function SubjectNotes() {
                   <div className="card-body p-4">
                     <div
                       style={{
-                        fontSize: "55px",
+                        fontSize: "60px",
                       }}
                     >
                       📖
@@ -154,17 +260,15 @@ export default function SubjectNotes() {
 
                     <h3 className="fw-bold mt-3">{note.title}</h3>
 
-                    <p className="text-secondary mt-3">{note.description}</p>
-
-                    <span
-                      className="badge bg-success px-3 py-2 mt-3"
+                    <p
                       style={{
-                        fontSize: "16px",
-                        borderRadius: "10px",
+                        color: "#cbd5e1",
                       }}
                     >
-                      🆓 FREE ACCESS
-                    </span>
+                      {note.description}
+                    </p>
+
+                    <span className="badge bg-success px-3 py-2">🆓 FREE</span>
 
                     <a
                       href={`https://vip-engineer.onrender.com${note.pdf}`}
@@ -173,11 +277,26 @@ export default function SubjectNotes() {
                       className="btn btn-success w-100 fw-bold mt-4"
                       style={{
                         borderRadius: "14px",
+
                         padding: "12px",
                       }}
                     >
-                      Open Free PDF 🚀
+                      Open PDF 🚀
                     </a>
+
+                    {role === "admin" && (
+                      <button
+                        className="btn btn-danger w-100 fw-bold mt-3"
+                        style={{
+                          borderRadius: "14px",
+
+                          padding: "12px",
+                        }}
+                        onClick={() => handleDeleteNote(note._id)}
+                      >
+                        Delete 🗑️
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -187,22 +306,30 @@ export default function SubjectNotes() {
 
         {/* PREMIUM NOTES */}
 
-        <div className="mb-5">
-          <h2 className="fw-bold mb-4 text-primary">🔒 Premium Notes</h2>
+        <div>
+          <h2 className="fw-bold mb-4 text-warning">🔥 Premium Notes</h2>
 
           <div className="row g-4">
             {filteredPremium.map((note) => (
-              <div className="col-md-4" key={note._id}>
+              <div className="col-lg-4 col-md-6" key={note._id}>
                 <div
                   className="card border-0 shadow-lg h-100"
                   style={{
-                    borderRadius: "24px",
+                    borderRadius: "30px",
+
                     overflow: "hidden",
+
+                    background: "rgba(255,255,255,0.08)",
+
+                    backdropFilter: "blur(10px)",
+
+                    color: "white",
                   }}
                 >
                   <div
                     style={{
-                      height: "10px",
+                      height: "8px",
+
                       background: "linear-gradient(to right, #2563eb, #7c3aed)",
                     }}
                   ></div>
@@ -210,7 +337,7 @@ export default function SubjectNotes() {
                   <div className="card-body p-4">
                     <div
                       style={{
-                        fontSize: "55px",
+                        fontSize: "60px",
                       }}
                     >
                       📘
@@ -218,37 +345,52 @@ export default function SubjectNotes() {
 
                     <h3 className="fw-bold mt-3">{note.title}</h3>
 
-                    <p className="text-secondary mt-3">{note.description}</p>
-
-                    <span
-                      className="badge bg-danger px-3 py-2"
+                    <p
                       style={{
-                        fontSize: "16px",
-                        borderRadius: "10px",
+                        color: "#cbd5e1",
                       }}
                     >
-                      🔥 PREMIUM
+                      {note.description}
+                    </p>
+
+                    <span className="badge bg-danger px-3 py-2">
+                      🔒 PREMIUM
                     </span>
 
-                    <h4
+                    <h2
                       className="fw-bold mt-3"
                       style={{
-                        color: "#2563eb",
+                        color: "#60a5fa",
                       }}
                     >
                       ₹{note.price}
-                    </h4>
+                    </h2>
 
                     <button
-                      className="btn btn-dark w-100 fw-bold mt-4"
+                      className="btn btn-light w-100 fw-bold mt-4"
                       style={{
                         borderRadius: "14px",
+
                         padding: "12px",
                       }}
                       onClick={() => handlePremiumClick(note)}
                     >
-                      Buy Premium 🔒
+                      Buy Premium 🚀
                     </button>
+
+                    {role === "admin" && (
+                      <button
+                        className="btn btn-danger w-100 fw-bold mt-3"
+                        style={{
+                          borderRadius: "14px",
+
+                          padding: "12px",
+                        }}
+                        onClick={() => handleDeleteNote(note._id)}
+                      >
+                        Delete 🗑️
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
