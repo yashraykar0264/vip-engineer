@@ -401,26 +401,69 @@ export default function SubjectNotes() {
                     </h2>
 
                     {isPurchased(note._id) ? (
-                      <a
-                        href={`https://vip-engineer.onrender.com/notes/view/${note._id}`}
-                        target="_blank"
-                        rel="noreferrer"
+                      <button
                         className="btn btn-success w-100 fw-bold mt-4"
                         style={{
                           borderRadius: "14px",
 
                           padding: "12px",
+
+                          background:
+                            "linear-gradient(to right, #16a34a, #22c55e)",
+
+                          border: "none",
+
+                          fontSize: "16px",
+                        }}
+                        onClick={async () => {
+                          try {
+                            const token = localStorage.getItem("token");
+
+                            const response = await fetch(
+                              `https://vip-engineer.onrender.com/notes/view/${note._id}`,
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                },
+                              },
+                            );
+
+                            if (!response.ok) {
+                              alert("Access Denied");
+
+                              return;
+                            }
+
+                            const blob = await response.blob();
+
+                            const fileURL = window.URL.createObjectURL(blob);
+
+                            window.open(fileURL);
+                          } catch (error) {
+                            console.log(error);
+
+                            alert("Failed To Open PDF");
+                          }
                         }}
                       >
                         Open PDF 🚀
-                      </a>
+                      </button>
                     ) : (
                       <button
-                        className="btn btn-light w-100 fw-bold mt-4"
+                        className="btn w-100 fw-bold mt-4"
                         style={{
                           borderRadius: "14px",
 
                           padding: "12px",
+
+                          background:
+                            "linear-gradient(to right, #2563eb, #7c3aed)",
+
+                          border: "none",
+
+                          color: "white",
+
+                          fontSize: "16px",
                         }}
                         onClick={() => handlePremiumClick(note)}
                       >
