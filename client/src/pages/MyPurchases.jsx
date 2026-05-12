@@ -77,13 +77,13 @@ export default function MyPurchases() {
   // GROUP PURCHASES
 
   const groupedPurchases = purchases.reduce((acc, purchase) => {
-    const subject = purchase.noteId?.subject || "Other";
+    const folder = purchase.noteId?.folder || "Other";
 
-    if (!acc[subject]) {
-      acc[subject] = [];
+    if (!acc[folder]) {
+      acc[folder] = [];
     }
 
-    acc[subject].push(purchase);
+    acc[folder].push(purchase);
 
     return acc;
   }, {});
@@ -144,12 +144,12 @@ export default function MyPurchases() {
 
         {/* SUBJECT WISE */}
 
-        {Object.keys(groupedPurchases).map((subject) => (
-          <div key={subject} className="mb-5">
-            <h2 className="fw-bold mb-4">📂 {subject}</h2>
+        {Object.keys(groupedPurchases).map((folder) => (
+          <div key={folder} className="mb-5">
+            <h2 className="fw-bold mb-4">📂 {folder}</h2>
 
             <div className="row g-4">
-              {groupedPurchases[subject].map((purchase) => (
+              {groupedPurchases[folder].map((purchase) => (
                 <div className="col-md-4" key={purchase._id}>
                   <div
                     className="card border-0 h-100"
