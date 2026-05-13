@@ -38,12 +38,12 @@ export default function Home() {
       {/* NAVBAR */}
 
       <nav
-        className="d-flex justify-content-between align-items-center px-3 px-md-5 py-3"
+        className="d-flex justify-content-between align-items-center px-3 px-md-5 py-1"
         style={{
           position: "fixed",
           top: 0,
           left: 0,
-          width: "75%",
+          width: "100%",
           zIndex: 9999,
           background: "rgba(15,23,42,0.85)",
           backdropFilter: "blur(12px)",
@@ -53,13 +53,13 @@ export default function Home() {
       >
         <div
           style={{
-            paddingTop: "110px",
+            paddingTop: "80px",
           }}
         ></div>
         <h2
           className="fw-bold m-0"
           style={{
-            fontSize: window.innerWidth < 768 ? "28px" : "42px",
+            fontSize: window.innerWidth < 768 ? "24px" : "32px",
           }}
         >
           VIP Engineer 🚀
