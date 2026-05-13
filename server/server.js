@@ -8,7 +8,7 @@ const fs = require("fs");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
-const xss = require("xss-clean");
+
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -43,9 +43,6 @@ app.use(helmet());
 
 app.use(mongoSanitize());
 
-// XSS PROTECTION
-
-app.use(xss());
 
 // RATE LIMITER
 
