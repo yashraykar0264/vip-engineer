@@ -154,9 +154,13 @@ export default function Home() {
                 fontSize: "18px",
                 boxShadow: "0 0 25px rgba(99,102,241,0.5)",
               }}
-              onClick={() => navigate("/dashboard")}
+              onClick={() => {
+                document.getElementById("explore").scrollIntoView({
+                  behavior: "smooth",
+                });
+              }}
             >
-              Explore Dashboard 🚀
+              Explore 🚀
             </button>
 
             <button
@@ -244,7 +248,7 @@ export default function Home() {
 
         {/* SUBJECTS */}
 
-        <div className="mt-5 pt-5">
+        <div className="mt-5 pt-5" id="explore">
           <div className="text-center mb-5">
             <h1
               className="fw-bold"
