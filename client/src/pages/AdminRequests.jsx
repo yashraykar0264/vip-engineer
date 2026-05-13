@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import API from "../services/api";
-
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminRequests() {
@@ -57,13 +57,13 @@ export default function AdminRequests() {
         },
       );
 
-      alert("Payment Approved ✅");
+      toast.success("Payment Approved ✅");
 
       fetchRequests();
     } catch (error) {
       console.log(error);
 
-      alert("Approval Failed ❌");
+      toast.error("Approval Failed ❌");
     }
   };
 

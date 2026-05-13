@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import API from "../services/api";
 
 export default function Dashboard() {
@@ -109,7 +109,7 @@ export default function Dashboard() {
         },
       );
 
-      alert(response.data.message);
+      toast.success(response.data.message);
 
       setNewFolder("");
 
@@ -117,7 +117,7 @@ export default function Dashboard() {
     } catch (error) {
       console.log(error);
 
-      alert(error.response?.data?.message || "Failed");
+      toast.error(error.response?.data?.message || "Failed");
     }
   };
 
@@ -133,7 +133,7 @@ export default function Dashboard() {
         },
       });
 
-      alert(response.data.message);
+      toast.success(response.data.message);
 
       fetchFolders();
 
@@ -141,7 +141,7 @@ export default function Dashboard() {
     } catch (error) {
       console.log(error);
 
-      alert("Delete Failed");
+      toast.error("Delete Failed ❌");
     }
   };
 

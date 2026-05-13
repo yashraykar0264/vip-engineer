@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import API from "../services/api";
 
 export default function Signup() {
@@ -31,7 +31,7 @@ export default function Signup() {
     } catch (error) {
       console.log(error);
 
-      alert("Signup Failed");
+      toast.error("Signup Failed ❌");
     }
   };
 

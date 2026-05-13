@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import API from "../services/api";
-
+import { toast } from "react-toastify";
 export default function Login() {
   const [email, setEmail] = useState("");
 
@@ -38,7 +38,7 @@ export default function Login() {
 
       // SUCCESS MESSAGE
 
-      alert("Login Successful 🚀");
+      toast.success("Login Successful 🚀");
 
       // REDIRECT
 
@@ -46,7 +46,7 @@ export default function Login() {
     } catch (error) {
       console.log(error);
 
-      alert("Invalid Email or Password ❌");
+      toast.error("Invalid Email or Password ❌");
     } finally {
       setLoading(false);
     }

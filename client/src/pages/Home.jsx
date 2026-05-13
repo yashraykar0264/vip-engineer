@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import API from "../services/api";
 
 export default function Home() {
@@ -21,6 +21,7 @@ export default function Home() {
 
       setFolders(response.data);
     } catch (error) {
+      toast.error("Failed to fetch folders ❌");
       console.log(error);
     }
   };

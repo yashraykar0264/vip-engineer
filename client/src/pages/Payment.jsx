@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import API from "../services/api";
-
+import { toast } from "react-toastify";
 export default function Payment() {
   const location = useLocation();
 
@@ -46,13 +46,13 @@ export default function Payment() {
         },
       });
 
-      alert("Payment Submitted Successfully ✅");
+      toast.success("Payment Submitted Successfully ✅");
 
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
 
-      alert("Payment Submission Failed ❌");
+      toast.error("Payment Submission Failed ❌");
     } finally {
       setLoading(false);
     }

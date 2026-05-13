@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import API from "../services/api";
 
 export default function SubjectNotes() {
@@ -73,7 +73,7 @@ export default function SubjectNotes() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Please Login First 🔒");
+      toast.warning("Please Login First 🔒");
 
       navigate("/login");
 
@@ -101,13 +101,13 @@ export default function SubjectNotes() {
         },
       });
 
-      alert(response.data.message);
+      toast.success(response.data.message);
 
       fetchNotes();
     } catch (error) {
       console.log(error);
 
-      alert("Delete Failed");
+      toast.error("Delete Failed ❌");
     }
   };
 
@@ -433,7 +433,7 @@ export default function SubjectNotes() {
                           );
 
                           if (!response.ok) {
-                            alert("Failed To Open PDF");
+                            toast.error("Failed To Open PDF ❌");
 
                             return;
                           }
@@ -446,7 +446,7 @@ export default function SubjectNotes() {
                         } catch (error) {
                           console.log(error);
 
-                          alert("Error Opening PDF");
+                          toast.error("Error Opening PDF ❌");
                         }
                       }}
                     >
@@ -601,7 +601,7 @@ export default function SubjectNotes() {
                             );
 
                             if (!response.ok) {
-                              alert("Access Denied");
+                              toast.error("Access Denied ❌");
 
                               return;
                             }
@@ -614,7 +614,7 @@ export default function SubjectNotes() {
                           } catch (error) {
                             console.log(error);
 
-                            alert("Failed To Open PDF");
+                            toast.error("Failed To Open PDF ❌");
                           }
                         }}
                       >
