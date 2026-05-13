@@ -23,14 +23,10 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const response = await API.post(
-        "/login",
-
-        {
-          email,
-          password,
-        },
-      );
+      const response = await API.post("/login", {
+        email,
+        password,
+      });
 
       // SAVE TOKEN
 
@@ -39,6 +35,10 @@ export default function Login() {
       // SAVE ROLE
 
       localStorage.setItem("role", response.data.role);
+
+      // SUCCESS MESSAGE
+
+      alert("Login Successful 🚀");
 
       // REDIRECT
 
@@ -56,37 +56,60 @@ export default function Login() {
     <div
       style={{
         minHeight: "100vh",
-
-        background: "linear-gradient(135deg, #0f172a, #1e293b, #312e81)",
-
+        background:
+          "linear-gradient(135deg, #020617 0%, #0f172a 40%, #1e1b4b 100%)",
         display: "flex",
-
         justifyContent: "center",
-
         alignItems: "center",
-
         padding: "20px",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
+      {/* BACKGROUND CIRCLES */}
+
+      <div
+        style={{
+          position: "absolute",
+          width: "350px",
+          height: "350px",
+          background: "#3b82f6",
+          borderRadius: "50%",
+          top: "-100px",
+          left: "-100px",
+          filter: "blur(120px)",
+          opacity: 0.4,
+        }}
+      ></div>
+
+      <div
+        style={{
+          position: "absolute",
+          width: "300px",
+          height: "300px",
+          background: "#8b5cf6",
+          borderRadius: "50%",
+          bottom: "-100px",
+          right: "-100px",
+          filter: "blur(120px)",
+          opacity: 0.4,
+        }}
+      ></div>
+
       {/* LOGIN CARD */}
 
       <div
         style={{
           width: "100%",
-
-          maxWidth: "450px",
-
+          maxWidth: "480px",
           background: "rgba(255,255,255,0.08)",
-
-          backdropFilter: "blur(10px)",
-
-          borderRadius: "30px",
-
-          padding: "40px",
-
+          backdropFilter: "blur(18px)",
+          borderRadius: "32px",
+          padding: "45px",
           border: "1px solid rgba(255,255,255,0.1)",
-
-          boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+          position: "relative",
+          zIndex: 2,
         }}
       >
         {/* TOP */}
@@ -94,7 +117,7 @@ export default function Login() {
         <div className="text-center mb-5">
           <div
             style={{
-              fontSize: "70px",
+              fontSize: "75px",
             }}
           >
             🚀
@@ -103,7 +126,8 @@ export default function Login() {
           <h1
             className="fw-bold text-white"
             style={{
-              fontSize: "45px",
+              fontSize: "48px",
+              letterSpacing: "1px",
             }}
           >
             VIP Engineer
@@ -112,30 +136,33 @@ export default function Login() {
           <p
             style={{
               color: "#cbd5e1",
-
               fontSize: "17px",
+              marginTop: "10px",
             }}
           >
-            Login to continue your journey
+            Login to access premium engineering notes
           </p>
         </div>
 
-      {
-  location.state?.message && (
-    <div
-      className="text-center mb-4"
-      style={{
-        background: "rgba(239,68,68,0.2)",
-        color: "#fecaca",
-        padding: "12px",
-        borderRadius: "12px",
-        fontWeight: "bold",
-      }}
-    >
-      {location.state.message}
-    </div>
-  );
-}
+        {/* LOGIN ALERT */}
+
+        {location.state?.message && (
+          <div
+            className="mb-4"
+            style={{
+              background: "rgba(239,68,68,0.15)",
+              border: "1px solid rgba(239,68,68,0.4)",
+              color: "#fecaca",
+              padding: "14px",
+              borderRadius: "16px",
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "15px",
+            }}
+          >
+            🔒 {location.state.message}
+          </div>
+        )}
 
         {/* FORM */}
 
@@ -143,7 +170,14 @@ export default function Login() {
           {/* EMAIL */}
 
           <div className="mb-4">
-            <label className="text-white fw-bold mb-2">Email Address</label>
+            <label
+              className="fw-bold mb-2"
+              style={{
+                color: "#f8fafc",
+              }}
+            >
+              Email Address
+            </label>
 
             <input
               type="email"
@@ -153,17 +187,13 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               style={{
-                padding: "14px",
-
-                borderRadius: "14px",
-
-                border: "none",
-
-                background: "rgba(255,255,255,0.1)",
-
+                padding: "15px",
+                borderRadius: "16px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.08)",
                 color: "white",
-
                 fontSize: "16px",
+                boxShadow: "none",
               }}
             />
           </div>
@@ -171,7 +201,14 @@ export default function Login() {
           {/* PASSWORD */}
 
           <div className="mb-4">
-            <label className="text-white fw-bold mb-2">Password</label>
+            <label
+              className="fw-bold mb-2"
+              style={{
+                color: "#f8fafc",
+              }}
+            >
+              Password
+            </label>
 
             <input
               type="password"
@@ -181,17 +218,13 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               style={{
-                padding: "14px",
-
-                borderRadius: "14px",
-
-                border: "none",
-
-                background: "rgba(255,255,255,0.1)",
-
+                padding: "15px",
+                borderRadius: "16px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.08)",
                 color: "white",
-
                 fontSize: "16px",
+                boxShadow: "none",
               }}
             />
           </div>
@@ -203,45 +236,92 @@ export default function Login() {
             className="btn fw-bold w-100"
             disabled={loading}
             style={{
-              background: "linear-gradient(to right, #3b82f6, #8b5cf6)",
-
+              background: "linear-gradient(to right, #2563eb, #8b5cf6)",
               color: "white",
-
-              padding: "14px",
-
-              borderRadius: "16px",
-
+              padding: "15px",
+              borderRadius: "18px",
               border: "none",
-
               fontSize: "18px",
+              transition: "0.3s",
+              boxShadow: "0 10px 30px rgba(59,130,246,0.4)",
             }}
           >
             {loading ? "Logging in..." : "Login 🚀"}
           </button>
         </form>
 
-        {/* FOOTER */}
+        {/* DIVIDER */}
 
-        <div className="text-center mt-4">
+        <div
+          className="d-flex align-items-center my-4"
+          style={{
+            color: "#94a3b8",
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: "1px",
+              background: "rgba(255,255,255,0.1)",
+            }}
+          ></div>
+
+          <span
+            style={{
+              padding: "0 15px",
+              fontSize: "14px",
+            }}
+          >
+            OR
+          </span>
+
+          <div
+            style={{
+              flex: 1,
+              height: "1px",
+              background: "rgba(255,255,255,0.1)",
+            }}
+          ></div>
+        </div>
+
+        {/* SIGNUP */}
+
+        <div className="text-center">
           <p
             style={{
               color: "#cbd5e1",
+              marginBottom: "15px",
             }}
           >
             Don’t have an account?
           </p>
 
           <button
-            className="btn btn-light fw-bold"
+            className="btn fw-bold w-100"
             style={{
-              borderRadius: "14px",
-
-              padding: "12px 20px",
+              borderRadius: "18px",
+              padding: "14px",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "white",
+              fontSize: "16px",
             }}
             onClick={() => navigate("/signup")}
           >
             Create Account ✨
           </button>
+        </div>
+
+        {/* FOOTER */}
+
+        <div
+          className="text-center mt-5"
+          style={{
+            color: "#94a3b8",
+            fontSize: "14px",
+          }}
+        >
+          Built for Engineers ❤️
         </div>
       </div>
     </div>
