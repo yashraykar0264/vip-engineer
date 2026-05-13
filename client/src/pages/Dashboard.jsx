@@ -192,27 +192,57 @@ export default function Dashboard() {
 
           <div className="d-flex gap-3 flex-wrap">
             {role === "admin" && (
-              <>
+              <div className="dropdown">
                 <button
-                  className="btn btn-primary fw-bold"
-                  onClick={() => navigate("/manage-explore-subjects")}
+                  className="btn fw-bold dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  style={{
+                    background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "14px",
+                    padding: "10px 18px",
+                  }}
                 >
-                  Home Subjects 🌟
-                </button>
-                <button
-                  className="btn btn-warning fw-bold"
-                  onClick={() => navigate("/add-note")}
-                >
-                  Add Note ➕
+                  ⚙️ Admin Menu
                 </button>
 
-                <button
-                  className="btn btn-info fw-bold"
-                  onClick={() => navigate("/admin-requests")}
+                <ul
+                  className="dropdown-menu dropdown-menu-end border-0 shadow-lg"
+                  style={{
+                    borderRadius: "18px",
+                    padding: "12px",
+                    minWidth: "240px",
+                  }}
                 >
-                  Requests 💳
-                </button>
-              </>
+                  <li>
+                    <button
+                      className="dropdown-item fw-bold py-3 rounded"
+                      onClick={() => navigate("/add-note")}
+                    >
+                      ➕ Add Note
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      className="dropdown-item fw-bold py-3 rounded"
+                      onClick={() => navigate("/admin-requests")}
+                    >
+                      💳 Payment Requests
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      className="dropdown-item fw-bold py-3 rounded"
+                      onClick={() => navigate("/manage-explore-subjects")}
+                    >
+                      🌟 Home Subjects
+                    </button>
+                  </li>
+                </ul>
+              </div>
             )}
 
             <button

@@ -9,7 +9,8 @@ const ExploreSubject = require("./models/ExploreSubject");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
-
+const HomeFolder = require("./models/HomeFolder");
+const HomeNote = require("./models/HomeNote");
 const authMiddleware = require("./middleware/authMiddleware");
 const adminMiddleware = require("./middleware/adminMiddleware");
 
@@ -734,6 +735,88 @@ app.put(
 
       res.status(500).json({
         message: "Update Failed",
+      });
+    }
+  },
+);
+
+// ================================
+
+// ADD HOME NOTE
+
+app.post(
+  "/add-home-note",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  upload.single("pdf"),
+
+  async (req, res) => {
+    try {
+      const { title, description, folder, type } = req.body;
+
+      const note = new HomeNote({
+        title,
+        description,
+        folder,
+        type,
+        pdf: `/uploads/${req.file.filename}`,
+      });
+
+      await note.save();
+
+      res.json({
+        message: "Home Note Added 🚀",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed",
+      });
+    }
+  },
+);
+
+// GET HOME NOTES
+
+app.get("/home-notes", async (req, res) => {
+  try {
+    const notes = await HomeNote.find();
+
+    res.json(notes);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Failed",
+    });
+  }
+});
+
+// DELETE HOME NOTE
+
+app.delete(
+  "/delete-home-note/:id",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      await HomeNote.findByIdAndDelete(req.params.id);
+
+      res.json({
+        message: "Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Delete Failed",
       });
     }
   },
