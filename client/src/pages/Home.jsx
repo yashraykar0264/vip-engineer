@@ -32,7 +32,7 @@ export default function Home() {
         background:
           "radial-gradient(circle at top left, #172554 0%, #020617 40%, #1e1b4b 100%)",
         color: "white",
-        overflowX: "hidden",
+        //overflowX: "hidden",
       }}
     >
       {/* NAVBAR */}
@@ -40,14 +40,22 @@ export default function Home() {
       <nav
         className="d-flex justify-content-between align-items-center px-3 px-md-5 py-3"
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
+          left: 0,
+          width: "100%",
           zIndex: 9999,
           background: "rgba(15,23,42,0.85)",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
         }}
       >
+        <div
+          style={{
+            paddingTop: "110px",
+          }}
+        ></div>
         <h2
           className="fw-bold m-0"
           style={{
@@ -160,7 +168,7 @@ export default function Home() {
                 });
               }}
             >
-              Explore 🚀
+              Explore Subjects 🚀
             </button>
 
             <button
