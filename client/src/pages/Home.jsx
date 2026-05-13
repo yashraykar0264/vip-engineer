@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import API from "../services/api";
 
 export default function Home() {
   const navigate = useNavigate();
 
-  const isLoggedIn = localStorage.getItem("token");
+  const [folders, setFolders] = useState([]);
 
-  const [subjects, setSubjects] = useState([]);
+  useEffect(() => {
+    fetchFolders();
+  }, []);
 
   // FETCH HOME FOLDERS
 
-  useEffect(() => {
-    fetchSubjects();
-  }, []);
-
-  const fetchSubjects = async () => {
+  const fetchFolders = async () => {
     try {
       const response = await API.get("/home-folders");
 
-      setSubjects(response.data);
+      setFolders(response.data);
     } catch (error) {
       console.log(error);
     }
-  };
-
-  // PREMIUM CLICK
-
-  const handlePremiumClick = () => {
-    navigate("/dashboard");
   };
 
   return (
@@ -38,366 +30,249 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background:
-          "linear-gradient(135deg, #020617 0%, #0f172a 45%, #1e1b4b 100%)",
-        overflow: "hidden",
+          "radial-gradient(circle at top left, #172554 0%, #020617 40%, #1e1b4b 100%)",
+        color: "white",
+        overflowX: "hidden",
       }}
     >
-      {/* BACKGROUND BLURS */}
-
-      <div
-        style={{
-          position: "fixed",
-          width: "350px",
-          height: "350px",
-          background: "#2563eb",
-          borderRadius: "50%",
-          top: "-120px",
-          left: "-120px",
-          filter: "blur(120px)",
-          opacity: 0.25,
-          zIndex: 0,
-        }}
-      ></div>
-
-      <div
-        style={{
-          position: "fixed",
-          width: "350px",
-          height: "350px",
-          background: "#7c3aed",
-          borderRadius: "50%",
-          bottom: "-120px",
-          right: "-120px",
-          filter: "blur(120px)",
-          opacity: 0.25,
-          zIndex: 0,
-        }}
-      ></div>
-
       {/* NAVBAR */}
 
       <nav
-        className="navbar navbar-expand-lg navbar-dark px-4 py-3"
+        className="d-flex justify-content-between align-items-center px-3 px-md-5 py-3"
         style={{
           background: "rgba(255,255,255,0.05)",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           position: "sticky",
           top: 0,
-          zIndex: 100,
+          zIndex: 1000,
         }}
       >
-        <div className="container-fluid">
-          <h2
-            className="fw-bold m-0"
+        <h2
+          className="fw-bold m-0"
+          style={{
+            fontSize: window.innerWidth < 768 ? "28px" : "42px",
+          }}
+        >
+          VIP Engineer 🚀
+        </h2>
+
+        <div className="d-flex gap-2">
+          <button
+            className="btn fw-bold"
             style={{
-              color: "white",
-              letterSpacing: "1px",
+              background: "#facc15",
+              color: "#000",
+              borderRadius: "14px",
+              padding: "10px 22px",
+              border: "none",
             }}
+            onClick={() => navigate("/login")}
           >
-            VIP Engineer 🚀
-          </h2>
+            Login
+          </button>
 
-          <div className="d-flex gap-2">
-            {!isLoggedIn ? (
-              <>
-                <Link
-                  to="/login"
-                  className="btn fw-bold"
-                  style={{
-                    background: "#facc15",
-                    color: "#020617",
-                    borderRadius: "14px",
-                    padding: "10px 22px",
-                    border: "none",
-                  }}
-                >
-                  Login
-                </Link>
-
-                <Link
-                  to="/signup"
-                  className="btn fw-bold"
-                  style={{
-                    background: "linear-gradient(to right, #2563eb, #7c3aed)",
-                    color: "white",
-                    borderRadius: "14px",
-                    padding: "10px 22px",
-                    border: "none",
-                  }}
-                >
-                  Signup
-                </Link>
-              </>
-            ) : (
-              <button
-                className="btn fw-bold"
-                style={{
-                  background: "linear-gradient(to right, #2563eb, #7c3aed)",
-                  color: "white",
-                  borderRadius: "14px",
-                  padding: "10px 22px",
-                  border: "none",
-                }}
-                onClick={() => navigate("/dashboard")}
-              >
-                Dashboard 🚀
-              </button>
-            )}
-          </div>
+          <button
+            className="btn fw-bold"
+            style={{
+              background: "linear-gradient(to right, #2563eb, #7c3aed)",
+              color: "white",
+              borderRadius: "14px",
+              padding: "10px 22px",
+              border: "none",
+            }}
+            onClick={() => navigate("/signup")}
+          >
+            Signup
+          </button>
         </div>
       </nav>
 
       {/* HERO */}
 
-      <div
-        className="container text-center"
-        style={{
-          paddingTop: "100px",
-          paddingBottom: "80px",
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
-        <div
-          style={{
-            display: "inline-block",
-            background: "rgba(255,255,255,0.08)",
-            color: "#cbd5e1",
-            padding: "10px 22px",
-            borderRadius: "999px",
-            marginBottom: "30px",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            fontWeight: "bold",
-          }}
-        >
-          🚀 India's Smartest Engineering Notes Platform
-        </div>
-
-        <h1
-          className="fw-bold"
-          style={{
-            fontSize: "90px",
-            color: "white",
-            lineHeight: "100px",
-            letterSpacing: "2px",
-          }}
-        >
-          VIP Engineer
-        </h1>
-
-        <h2
-          className="fw-bold mt-3"
-          style={{
-            fontSize: "42px",
-            color: "#cbd5e1",
-          }}
-        >
-          Notes For Real Engineers 😎
-        </h2>
-
-        <p
-          className="mx-auto mt-4"
-          style={{
-            maxWidth: "950px",
-            fontSize: "22px",
-            color: "#94a3b8",
-            lineHeight: "42px",
-          }}
-        >
-          Premium handwritten PDFs, placement focused DSA notes, viva
-          preparation, quick revision cheatsheets and smart engineering content
-          designed for students 🚀
-        </p>
-
-        {/* BUTTONS */}
-
-        <div className="mt-5 d-flex justify-content-center gap-3 flex-wrap">
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="btn fw-bold"
+      <div className="container py-5">
+        <div className="text-center">
+          <div
             style={{
-              background: "linear-gradient(to right, #2563eb, #7c3aed)",
-              color: "white",
-              borderRadius: "18px",
-              padding: "16px 34px",
-              border: "none",
-              fontSize: "18px",
-              boxShadow: "0 10px 30px rgba(37,99,235,0.35)",
-            }}
-          >
-            Explore Dashboard 🚀
-          </button>
-
-          <button
-            onClick={handlePremiumClick}
-            className="btn fw-bold"
-            style={{
+              display: "inline-block",
+              padding: "10px 24px",
+              borderRadius: "999px",
               background: "rgba(255,255,255,0.08)",
-              color: "white",
-              borderRadius: "18px",
-              padding: "16px 34px",
               border: "1px solid rgba(255,255,255,0.08)",
-              fontSize: "18px",
-              backdropFilter: "blur(10px)",
+              fontSize: "14px",
+              marginBottom: "30px",
             }}
           >
-            Premium Notes 🔥
-          </button>
+            🚀 India’s Smartest Engineering Notes Platform
+          </div>
+
+          <h1
+            className="fw-bold"
+            style={{
+              fontSize: window.innerWidth < 768 ? "55px" : "110px",
+              lineHeight: "1",
+            }}
+          >
+            VIP Engineer
+          </h1>
+
+          <h2
+            className="fw-bold mt-3"
+            style={{
+              color: "#cbd5e1",
+              fontSize: window.innerWidth < 768 ? "28px" : "55px",
+            }}
+          >
+            Notes For Real Engineers 😎
+          </h2>
+
+          <p
+            className="mx-auto mt-4"
+            style={{
+              maxWidth: "850px",
+              color: "#94a3b8",
+              fontSize: window.innerWidth < 768 ? "16px" : "22px",
+              lineHeight: "1.8",
+            }}
+          >
+            Premium handwritten PDFs, placement focused DSA notes, viva
+            preparation, quick revision cheatsheets and smart engineering
+            content designed for students 🚀
+          </p>
+
+          <div className="d-flex justify-content-center flex-wrap gap-3 mt-5">
+            <button
+              className="btn fw-bold"
+              style={{
+                background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                color: "white",
+                borderRadius: "18px",
+                padding: "16px 34px",
+                border: "none",
+                fontSize: "18px",
+                boxShadow: "0 0 25px rgba(99,102,241,0.5)",
+              }}
+              onClick={() => navigate("/dashboard")}
+            >
+              Explore Dashboard 🚀
+            </button>
+
+            <button
+              className="btn fw-bold"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                color: "white",
+                borderRadius: "18px",
+                padding: "16px 34px",
+                border: "1px solid rgba(255,255,255,0.08)",
+                fontSize: "18px",
+              }}
+            >
+              Premium Notes 🔥
+            </button>
+          </div>
         </div>
 
         {/* STATS */}
 
-        <div className="row mt-5 g-4">
-          <div className="col-md-4">
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: "28px",
-                padding: "35px",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <h1
-                className="fw-bold"
-                style={{
-                  color: "#60a5fa",
-                  fontSize: "55px",
-                }}
-              >
-                500+
-              </h1>
+        <div className="row g-4 mt-5">
+          {[
+            {
+              number: "500+",
+              title: "Students",
+              color: "#60a5fa",
+            },
 
-              <h5
+            {
+              number: "100+",
+              title: "Premium PDFs",
+              color: "#22c55e",
+            },
+
+            {
+              number: "24/7",
+              title: "Exam Support",
+              color: "#facc15",
+            },
+          ].map((item, index) => (
+            <div className="col-lg-4 col-md-6" key={index}>
+              <div
+                className="h-100 text-center"
                 style={{
-                  color: "#cbd5e1",
+                  background: "rgba(255,255,255,0.06)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "28px",
+                  padding: "45px 20px",
+                  transition: "0.3s",
                 }}
               >
-                Students
-              </h5>
+                <h1
+                  className="fw-bold"
+                  style={{
+                    fontSize: "60px",
+                    color: item.color,
+                  }}
+                >
+                  {item.number}
+                </h1>
+
+                <h4
+                  className="fw-semibold mt-3"
+                  style={{
+                    color: "#cbd5e1",
+                  }}
+                >
+                  {item.title}
+                </h4>
+              </div>
             </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: "28px",
-                padding: "35px",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <h1
-                className="fw-bold"
-                style={{
-                  color: "#22c55e",
-                  fontSize: "55px",
-                }}
-              >
-                100+
-              </h1>
-
-              <h5
-                style={{
-                  color: "#cbd5e1",
-                }}
-              >
-                Premium PDFs
-              </h5>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: "28px",
-                padding: "35px",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <h1
-                className="fw-bold"
-                style={{
-                  color: "#facc15",
-                  fontSize: "55px",
-                }}
-              >
-                24/7
-              </h1>
-
-              <h5
-                style={{
-                  color: "#cbd5e1",
-                }}
-              >
-                Exam Support
-              </h5>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* SUBJECTS */}
 
         <div className="mt-5 pt-5">
-          <h1
-            className="fw-bold mb-3"
-            style={{
-              fontSize: "60px",
-              color: "white",
-            }}
-          >
-            Explore Subjects 📂
-          </h1>
+          <div className="text-center mb-5">
+            <h1
+              className="fw-bold"
+              style={{
+                fontSize: window.innerWidth < 768 ? "45px" : "75px",
+              }}
+            >
+              Explore Subjects 📂
+            </h1>
 
-          <p
-            style={{
-              color: "#94a3b8",
-              fontSize: "20px",
-            }}
-          >
-            Smart categories created by admin 🚀
-          </p>
+            <p
+              style={{
+                color: "#94a3b8",
+                fontSize: "18px",
+              }}
+            >
+              Smart categories created by admin 🚀
+            </p>
+          </div>
 
-          <div className="row g-4 mt-4 justify-content-center">
-            {subjects.map((subject) => (
-              <div className="col-md-4 col-lg-3" key={subject._id}>
+          <div className="row g-4 justify-content-center">
+            {folders.map((folder) => (
+              <div className="col-xl-3 col-lg-4 col-md-6" key={folder._id}>
                 <div
-                  onClick={() => {
-                    navigate(`/home-subject/${subject.name}`);
-                  }}
-                  className="h-100"
+                  onClick={() => navigate(`/home-subject/${folder.name}`)}
                   style={{
-                    background: `linear-gradient(135deg, ${subject.color}, #111827)`,
-                    borderRadius: "28px",
-                    padding: "28px 22px",
                     cursor: "pointer",
-                    transition: "0.3s",
-                    color: "white",
-                    boxShadow: "0 15px 35px rgba(0,0,0,0.25)",
+                    background: `linear-gradient(135deg, ${folder.color}, #111827)`,
+                    borderRadius: "35px",
+                    padding: "35px 25px",
+                    height: "100%",
                     position: "relative",
                     overflow: "hidden",
-                    backdropFilter: "blur(10px)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform =
-                      "translateY(-10px) scale(1.03)";
-
-                    e.currentTarget.style.boxShadow =
-                      "0 25px 45px rgba(37,99,235,0.35)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform =
-                      "translateY(0px) scale(1)";
-
-                    e.currentTarget.style.boxShadow =
-                      "0 15px 35px rgba(0,0,0,0.25)";
+                    transition: "0.3s",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    boxShadow: "0 0 30px rgba(0,0,0,0.25)",
                   }}
                 >
+                  {/* GLOW */}
+
                   <div
                     style={{
                       position: "absolute",
@@ -412,27 +287,26 @@ export default function Home() {
 
                   <div
                     style={{
-                      fontSize: "65px",
+                      fontSize: "70px",
                     }}
                   >
-                    {subject.emoji}
+                    {folder.emoji}
                   </div>
 
                   <h2
-                    className="fw-bold mt-3"
+                    className="fw-bold mt-4"
                     style={{
-                      fontSize: "30px",
+                      fontSize: "38px",
                     }}
                   >
-                    {subject.name}
+                    {folder.name}
                   </h2>
 
                   <p
-                    className="mt-3"
                     style={{
-                      color: "rgba(255,255,255,0.82)",
-                      minHeight: "50px",
-                      fontSize: "15px",
+                      color: "#e2e8f0",
+                      lineHeight: "1.7",
+                      minHeight: "70px",
                     }}
                   >
                     Explore curated engineering notes, PDFs & premium resources
@@ -440,14 +314,13 @@ export default function Home() {
                   </p>
 
                   <button
-                    className="btn fw-bold mt-3"
+                    className="btn w-100 fw-bold mt-3"
                     style={{
                       background: "rgba(255,255,255,0.12)",
                       color: "white",
-                      borderRadius: "14px",
-                      border: "1px solid rgba(255,255,255,0.18)",
-                      padding: "10px 18px",
-                      width: "100%",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      padding: "14px",
                     }}
                   >
                     Explore →
@@ -457,34 +330,39 @@ export default function Home() {
             ))}
           </div>
 
-          {subjects.length === 0 && (
+          {folders.length === 0 && (
             <div
-              className="mt-5"
+              className="text-center mt-5"
               style={{
                 background: "rgba(255,255,255,0.06)",
                 borderRadius: "30px",
-                padding: "50px",
-                color: "#cbd5e1",
+                padding: "60px 20px",
               }}
             >
-              <h2>No Subjects Added Yet 😔</h2>
+              <h2
+                style={{
+                  color: "#cbd5e1",
+                }}
+              >
+                No Subjects Added Yet 😔
+              </h2>
             </div>
           )}
         </div>
 
         {/* FOOTER */}
 
-        <footer
-          className="mt-5"
-          style={{
-            paddingTop: "80px",
-            color: "#94a3b8",
-          }}
-        >
-          <h4 className="fw-bold text-white">VIP Engineer © 2026</h4>
+        <div className="text-center mt-5 pt-5 pb-4">
+          <h4 className="fw-bold">VIP Engineer © 2026</h4>
 
-          <p>Built For Engineers ❤️</p>
-        </footer>
+          <p
+            style={{
+              color: "#94a3b8",
+            }}
+          >
+            Built For Engineers ❤️
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -117,7 +117,7 @@ export default function Dashboard() {
     } catch (error) {
       console.log(error);
 
-      alert(error.response?.data?.message || "Failed To Create Folder");
+      alert(error.response?.data?.message || "Failed");
     }
   };
 
@@ -141,7 +141,7 @@ export default function Dashboard() {
     } catch (error) {
       console.log(error);
 
-      alert("Failed To Delete Folder");
+      alert("Delete Failed");
     }
   };
 
@@ -153,7 +153,7 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  // FILTERED FOLDERS
+  // FILTERED
 
   const filteredFolders = folders.filter((folder) =>
     folder.name.toLowerCase().includes(search.toLowerCase()),
@@ -169,108 +169,130 @@ export default function Dashboard() {
     <div
       style={{
         minHeight: "100vh",
-
-        background: "linear-gradient(135deg, #020617, #0f172a, #312e81)",
-
+        background:
+          "radial-gradient(circle at top left,#172554 0%,#020617 45%,#1e1b4b 100%)",
         color: "white",
+        overflowX: "hidden",
       }}
     >
       {/* NAVBAR */}
 
       <nav
-        className="navbar navbar-expand-lg px-4 py-3"
+        className="px-3 px-md-5 py-3 d-flex justify-content-between align-items-center flex-wrap gap-3"
         style={{
           background: "rgba(255,255,255,0.05)",
-
           backdropFilter: "blur(12px)",
-
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
         }}
       >
-        <div className="container-fluid">
-          <h2 className="fw-bold m-0">VIP Engineer 🚀</h2>
+        <h2
+          className="fw-bold m-0"
+          style={{
+            fontSize: window.innerWidth < 768 ? "28px" : "38px",
+          }}
+        >
+          VIP Engineer 🚀
+        </h2>
 
-          <div className="d-flex gap-3 flex-wrap">
-            {role === "admin" && (
-              <div className="dropdown">
-                <button
-                  className="btn fw-bold dropdown-toggle"
-                  data-bs-toggle="dropdown"
-                  style={{
-                    background: "linear-gradient(to right, #2563eb, #7c3aed)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "14px",
-                    padding: "10px 18px",
-                  }}
-                >
-                  ⚙️ Admin Menu
-                </button>
+        <div className="d-flex gap-2 flex-wrap">
+          {role === "admin" && (
+            <div className="dropdown">
+              <button
+                className="btn fw-bold dropdown-toggle"
+                data-bs-toggle="dropdown"
+                style={{
+                  background: "linear-gradient(to right,#2563eb,#7c3aed)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "14px",
+                  padding: "12px 20px",
+                }}
+              >
+                ⚙️ Admin
+              </button>
 
-                <ul
-                  className="dropdown-menu dropdown-menu-end border-0 shadow-lg"
-                  style={{
-                    borderRadius: "18px",
-                    padding: "12px",
-                    minWidth: "240px",
-                  }}
-                >
-                  <li>
-                    <button
-                      className="dropdown-item fw-bold py-3 rounded"
-                      onClick={() => navigate("/add-note")}
-                    >
-                      ➕ Add Note
-                    </button>
-                  </li>
+              <ul
+                className="dropdown-menu dropdown-menu-end border-0 shadow-lg"
+                style={{
+                  borderRadius: "20px",
+                  padding: "12px",
+                  minWidth: "230px",
+                }}
+              >
+                <li>
+                  <button
+                    className="dropdown-item fw-bold py-3 rounded"
+                    onClick={() => navigate("/add-note")}
+                  >
+                    ➕ Add Note
+                  </button>
+                </li>
 
-                  <li>
-                    <button
-                      className="dropdown-item fw-bold py-3 rounded"
-                      onClick={() => navigate("/admin-requests")}
-                    >
-                      💳 Payment Requests
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="dropdown-item fw-bold py-3 rounded"
-                      onClick={() => navigate("/add-home-folder")}
-                    >
-                      📂 Add Home Folder
-                    </button>
-                  </li>
+                <li>
+                  <button
+                    className="dropdown-item fw-bold py-3 rounded"
+                    onClick={() => navigate("/admin-requests")}
+                  >
+                    💳 Payment Requests
+                  </button>
+                </li>
 
-                  <li>
-                    <button
-                      className="dropdown-item fw-bold py-3 rounded"
-                      onClick={() => navigate("/add-home-files")}
-                    >
-                      📚 Add Home Files
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            )}
+                <li>
+                  <button
+                    className="dropdown-item fw-bold py-3 rounded"
+                    onClick={() => navigate("/add-home-folder")}
+                  >
+                    📂 Add Home Folder
+                  </button>
+                </li>
 
-            <button
-              className="btn btn-light fw-bold"
-              onClick={() => navigate("/my-purchases")}
-            >
-              My Purchases 📚
-            </button>
+                <li>
+                  <button
+                    className="dropdown-item fw-bold py-3 rounded"
+                    onClick={() => navigate("/add-home-files")}
+                  >
+                    📚 Add Home Files
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
 
-            <button
-              className="btn btn-light fw-bold"
-              onClick={() => navigate("/profile")}
-            >
-              Profile 👤
-            </button>
+          <button
+            className="btn btn-light fw-bold"
+            style={{
+              borderRadius: "14px",
+              padding: "10px 18px",
+            }}
+            onClick={() => navigate("/my-purchases")}
+          >
+            Purchases 📚
+          </button>
 
-            <button className="btn btn-danger fw-bold" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
+          <button
+            className="btn btn-light fw-bold"
+            style={{
+              borderRadius: "14px",
+              padding: "10px 18px",
+            }}
+            onClick={() => navigate("/profile")}
+          >
+            Profile 👤
+          </button>
+
+          <button
+            className="btn btn-danger fw-bold"
+            style={{
+              borderRadius: "14px",
+              padding: "10px 18px",
+            }}
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
       </nav>
 
@@ -278,138 +300,156 @@ export default function Dashboard() {
         {/* HERO */}
 
         <div className="text-center mb-5">
+          <div
+            style={{
+              display: "inline-block",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "999px",
+              padding: "10px 24px",
+              marginBottom: "25px",
+              color: "#cbd5e1",
+              fontSize: "14px",
+            }}
+          >
+            🚀 Premium Engineering Marketplace
+          </div>
+
           <h1
             className="fw-bold"
             style={{
-              fontSize: "75px",
-
-              letterSpacing: "2px",
+              fontSize: window.innerWidth < 768 ? "50px" : "90px",
+              lineHeight: "1",
             }}
           >
-            VIP Engineer 📚
+            Dashboard 📚
           </h1>
 
           <p
-            className="mt-3"
+            className="mx-auto mt-4"
             style={{
-              color: "#cbd5e1",
-
-              fontSize: "22px",
+              maxWidth: "750px",
+              color: "#94a3b8",
+              fontSize: window.innerWidth < 768 ? "16px" : "22px",
+              lineHeight: "1.8",
             }}
           >
-            Premium Notes Marketplace For Engineers 🚀
+            Access premium handwritten notes, placements PDFs, quick revision
+            sheets and curated engineering resources 😎
           </p>
         </div>
 
         {/* STATS */}
 
         <div className="row g-4 mb-5">
-          <div className="col-md-4">
-            <div
-              className="p-4 text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
+          {[
+            {
+              icon: "📚",
+              title: "Total Notes",
+              value: notes.length,
+              color: "#60a5fa",
+            },
 
-                borderRadius: "30px",
+            {
+              icon: "🆓",
+              title: "Free Notes",
+              value: freeNotes,
+              color: "#22c55e",
+            },
 
-                backdropFilter: "blur(10px)",
+            {
+              icon: "🔥",
+              title: "Premium",
+              value: premiumNotes,
+              color: "#facc15",
+            },
+          ].map((item, index) => (
+            <div className="col-lg-4 col-md-6" key={index}>
+              <div
+                className="h-100 text-center"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: "28px",
+                  padding: "35px 20px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "50px",
+                  }}
+                >
+                  {item.icon}
+                </div>
 
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <h1 style={{ fontSize: "55px" }}>📚</h1>
+                <h1
+                  className="fw-bold mt-3"
+                  style={{
+                    color: item.color,
+                    fontSize: "50px",
+                  }}
+                >
+                  {item.value}
+                </h1>
 
-              <h2 className="fw-bold">{notes.length}</h2>
-
-              <p>Total Notes</p>
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "18px",
+                  }}
+                >
+                  {item.title}
+                </p>
+              </div>
             </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="p-4 text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
-
-                borderRadius: "30px",
-
-                backdropFilter: "blur(10px)",
-
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <h1 style={{ fontSize: "55px" }}>🆓</h1>
-
-              <h2 className="fw-bold text-success">{freeNotes}</h2>
-
-              <p>Free Notes</p>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="p-4 text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
-
-                borderRadius: "30px",
-
-                backdropFilter: "blur(10px)",
-
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <h1 style={{ fontSize: "55px" }}>🔥</h1>
-
-              <h2 className="fw-bold text-warning">{premiumNotes}</h2>
-
-              <p>Premium Notes</p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* ADMIN PANEL */}
 
         {role === "admin" && (
           <div
-            className="p-4 mb-5"
+            className="mb-5"
             style={{
-              background: "rgba(255,255,255,0.08)",
-
-              borderRadius: "30px",
-
-              backdropFilter: "blur(10px)",
-
+              background: "rgba(255,255,255,0.06)",
               border: "1px solid rgba(255,255,255,0.08)",
+              backdropFilter: "blur(12px)",
+              borderRadius: "30px",
+              padding: "30px",
             }}
           >
             <h2 className="fw-bold mb-4">📂 Folder Management</h2>
 
-            <div className="d-flex gap-3">
-              <input
-                type="text"
-                placeholder="Enter New Folder Name"
-                className="form-control p-3"
-                style={{
-                  borderRadius: "16px",
+            <div className="row g-3">
+              <div className="col-lg-9">
+                <input
+                  type="text"
+                  placeholder="Enter Folder Name"
+                  className="form-control p-3"
+                  style={{
+                    borderRadius: "16px",
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "white",
+                  }}
+                  value={newFolder}
+                  onChange={(e) => setNewFolder(e.target.value)}
+                />
+              </div>
 
-                  fontSize: "17px",
-                }}
-                value={newFolder}
-                onChange={(e) => setNewFolder(e.target.value)}
-              />
-
-              <button
-                className="btn btn-success fw-bold"
-                style={{
-                  borderRadius: "16px",
-
-                  padding: "14px 24px",
-                }}
-                onClick={handleCreateFolder}
-              >
-                Create 🚀
-              </button>
+              <div className="col-lg-3">
+                <button
+                  className="btn btn-success fw-bold w-100"
+                  style={{
+                    borderRadius: "16px",
+                    padding: "15px",
+                  }}
+                  onClick={handleCreateFolder}
+                >
+                  Create 🚀
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -422,9 +462,11 @@ export default function Dashboard() {
             placeholder="🔍 Search Folders..."
             className="form-control p-3"
             style={{
-              borderRadius: "20px",
-
-              fontSize: "18px",
+              borderRadius: "18px",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              color: "white",
+              fontSize: "17px",
             }}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -444,43 +486,37 @@ export default function Dashboard() {
             ).length;
 
             return (
-              <div className="col-lg-4 col-md-6" key={folder._id}>
+              <div className="col-xl-3 col-lg-4 col-md-6" key={folder._id}>
                 <div
                   style={{
-                    background: "rgba(255,255,255,0.08)",
-
-                    borderRadius: "32px",
-
-                    padding: "35px",
-
-                    border: "1px solid rgba(255,255,255,0.1)",
-
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "30px",
+                    padding: "28px",
                     backdropFilter: "blur(12px)",
-
                     height: "100%",
-
                     transition: "0.3s",
                   }}
                 >
                   <div
                     style={{
-                      fontSize: "90px",
+                      fontSize: "70px",
                     }}
                   >
                     📂
                   </div>
 
-                  <h1
+                  <h2
                     className="fw-bold mt-3"
                     style={{
-                      fontSize: "42px",
+                      fontSize: "34px",
                     }}
                   >
                     {folder.name}
-                  </h1>
+                  </h2>
 
-                  <div className="mt-4">
-                    <span className="badge bg-primary me-2 px-3 py-2">
+                  <div className="d-flex gap-2 flex-wrap mt-3">
+                    <span className="badge bg-primary px-3 py-2">
                       {folderNotes.length} Notes
                     </span>
 
@@ -490,19 +526,13 @@ export default function Dashboard() {
                   </div>
 
                   <button
-                    className="btn fw-bold mt-4 w-100"
+                    className="btn fw-bold w-100 mt-4"
                     style={{
-                      borderRadius: "16px",
-
-                      padding: "14px",
-
-                      background: "linear-gradient(to right, #2563eb, #7c3aed)",
-
+                      background: "linear-gradient(to right,#2563eb,#7c3aed)",
                       border: "none",
-
                       color: "white",
-
-                      fontSize: "17px",
+                      borderRadius: "16px",
+                      padding: "14px",
                     }}
                     onClick={() => navigate(`/subject/${folder.name}`)}
                   >
@@ -511,15 +541,14 @@ export default function Dashboard() {
 
                   {role === "admin" && (
                     <button
-                      className="btn btn-danger fw-bold mt-3 w-100"
+                      className="btn btn-danger fw-bold w-100 mt-3"
                       style={{
                         borderRadius: "16px",
-
                         padding: "14px",
                       }}
                       onClick={() => handleDeleteFolder(folder._id)}
                     >
-                      Delete Folder 🗑️
+                      Delete 🗑️
                     </button>
                   )}
                 </div>

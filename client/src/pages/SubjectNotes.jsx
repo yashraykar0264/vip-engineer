@@ -67,7 +67,7 @@ export default function SubjectNotes() {
     );
   };
 
-  // BUY PREMIUM
+  // PREMIUM CLICK
 
   const handlePremiumClick = (note) => {
     const token = localStorage.getItem("token");
@@ -107,7 +107,7 @@ export default function SubjectNotes() {
     } catch (error) {
       console.log(error);
 
-      alert("Failed To Delete Note");
+      alert("Delete Failed");
     }
   };
 
@@ -129,111 +129,182 @@ export default function SubjectNotes() {
     <div
       style={{
         minHeight: "100vh",
-
-        background: "linear-gradient(135deg, #020617, #0f172a, #312e81)",
-
+        background:
+          "radial-gradient(circle at top left,#172554 0%,#020617 45%,#1e1b4b 100%)",
         color: "white",
+        overflowX: "hidden",
       }}
     >
+      {/* GLOW */}
+
+      <div
+        style={{
+          position: "fixed",
+          width: "300px",
+          height: "300px",
+          background: "#2563eb",
+          borderRadius: "50%",
+          top: "-100px",
+          left: "-100px",
+          filter: "blur(120px)",
+          opacity: 0.2,
+          zIndex: 0,
+        }}
+      ></div>
+
+      <div
+        style={{
+          position: "fixed",
+          width: "300px",
+          height: "300px",
+          background: "#7c3aed",
+          borderRadius: "50%",
+          bottom: "-100px",
+          right: "-100px",
+          filter: "blur(120px)",
+          opacity: 0.2,
+          zIndex: 0,
+        }}
+      ></div>
+
       {/* NAVBAR */}
 
       <nav
-        className="navbar navbar-dark px-4 py-3"
+        className="px-3 px-md-5 py-3 d-flex justify-content-between align-items-center"
         style={{
           background: "rgba(255,255,255,0.05)",
-
           backdropFilter: "blur(12px)",
-
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
         }}
       >
-        <h2 className="fw-bold">VIP Engineer 🚀</h2>
+        <h2
+          className="fw-bold m-0"
+          style={{
+            fontSize: window.innerWidth < 768 ? "28px" : "38px",
+          }}
+        >
+          VIP Engineer 🚀
+        </h2>
 
         <button
-          className="btn btn-light fw-bold"
+          className="btn fw-bold"
+          style={{
+            background: "linear-gradient(to right,#2563eb,#7c3aed)",
+            color: "white",
+            border: "none",
+            borderRadius: "14px",
+            padding: "10px 22px",
+          }}
           onClick={() => navigate("/dashboard")}
         >
-          Dashboard
+          Dashboard 📚
         </button>
       </nav>
 
       <div className="container py-5">
-        {/* HEADER */}
+        {/* HERO */}
 
         <div className="text-center mb-5">
+          <div
+            style={{
+              fontSize: window.innerWidth < 768 ? "70px" : "90px",
+            }}
+          >
+            📂
+          </div>
+
           <h1
             className="fw-bold"
             style={{
-              fontSize: "65px",
+              fontSize: window.innerWidth < 768 ? "52px" : "90px",
+              lineHeight: "1",
             }}
           >
-            📂 {name}
+            {name}
           </h1>
 
           <p
+            className="mx-auto mt-4"
             style={{
-              color: "#cbd5e1",
-
-              fontSize: "20px",
+              maxWidth: "750px",
+              color: "#94a3b8",
+              fontSize: window.innerWidth < 768 ? "16px" : "22px",
+              lineHeight: "1.8",
             }}
           >
-            Premium Engineering Notes Marketplace 🚀
+            Premium engineering notes, handwritten PDFs and smart
+            placement-focused content 🚀
           </p>
         </div>
 
         {/* STATS */}
 
         <div className="row g-4 mb-5">
-          <div className="col-md-4">
-            <div
-              className="p-4 text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
+          {[
+            {
+              icon: "📚",
+              title: "Total Notes",
+              value: notes.length,
+              color: "#60a5fa",
+            },
 
-                borderRadius: "25px",
-              }}
-            >
-              <h1>📚</h1>
+            {
+              icon: "🆓",
+              title: "Free Notes",
+              value: freeNotes.length,
+              color: "#22c55e",
+            },
 
-              <h2 className="fw-bold">{notes.length}</h2>
+            {
+              icon: "🔥",
+              title: "Premium",
+              value: premiumNotes.length,
+              color: "#facc15",
+            },
+          ].map((item, index) => (
+            <div className="col-lg-4 col-md-6" key={index}>
+              <div
+                className="h-100 text-center"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "28px",
+                  backdropFilter: "blur(12px)",
+                  padding: "35px 20px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "50px",
+                  }}
+                >
+                  {item.icon}
+                </div>
 
-              <p>Total Notes</p>
+                <h1
+                  className="fw-bold mt-3"
+                  style={{
+                    fontSize: "48px",
+                    color: item.color,
+                  }}
+                >
+                  {item.value}
+                </h1>
+
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "18px",
+                  }}
+                >
+                  {item.title}
+                </p>
+              </div>
             </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="p-4 text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
-
-                borderRadius: "25px",
-              }}
-            >
-              <h1>🆓</h1>
-
-              <h2 className="fw-bold text-success">{freeNotes.length}</h2>
-
-              <p>Free Notes</p>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="p-4 text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
-
-                borderRadius: "25px",
-              }}
-            >
-              <h1>🔥</h1>
-
-              <h2 className="fw-bold text-warning">{premiumNotes.length}</h2>
-
-              <p>Premium Notes</p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* SEARCH */}
@@ -245,8 +316,10 @@ export default function SubjectNotes() {
             className="form-control p-3"
             style={{
               borderRadius: "18px",
-
-              fontSize: "18px",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              color: "white",
+              fontSize: "17px",
             }}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -255,35 +328,68 @@ export default function SubjectNotes() {
 
         {/* FREE NOTES */}
 
-        <div className="mb-5">
-          <h2 className="fw-bold mb-4 text-success">🆓 Free Notes</h2>
+        {filteredFree.length > 0 && (
+          <div className="mb-5">
+            <div className="d-flex align-items-center gap-3 mb-4">
+              <h1
+                className="fw-bold"
+                style={{
+                  color: "#22c55e",
+                  fontSize: window.innerWidth < 768 ? "34px" : "46px",
+                }}
+              >
+                🆓 Free Notes
+              </h1>
 
-          <div className="row g-4">
-            {filteredFree.map((note) => (
-              <div className="col-lg-4 col-md-6" key={note._id}>
-                <div
-                  className="card border-0 shadow-lg h-100"
-                  style={{
-                    borderRadius: "30px",
+              <div
+                style={{
+                  flex: 1,
+                  height: "4px",
+                  background: "linear-gradient(to right,#22c55e,transparent)",
+                  borderRadius: "10px",
+                }}
+              ></div>
+            </div>
 
-                    overflow: "hidden",
-
-                    background: "rgba(255,255,255,0.08)",
-
-                    backdropFilter: "blur(10px)",
-
-                    color: "white",
-                  }}
-                >
+            <div className="row g-4">
+              {filteredFree.map((note) => (
+                <div className="col-xl-3 col-lg-4 col-md-6" key={note._id}>
                   <div
                     style={{
-                      height: "8px",
-
-                      background: "linear-gradient(to right, #22c55e, #16a34a)",
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: "28px",
+                      backdropFilter: "blur(12px)",
+                      padding: "26px",
+                      height: "100%",
+                      transition: "0.3s",
+                      position: "relative",
+                      overflow: "hidden",
                     }}
-                  ></div>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-8px)";
 
-                  <div className="card-body p-4">
+                      e.currentTarget.style.boxShadow =
+                        "0 20px 40px rgba(34,197,94,0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0px)";
+
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        width: "110px",
+                        height: "110px",
+                        background: "rgba(34,197,94,0.12)",
+                        borderRadius: "50%",
+                        top: "-30px",
+                        right: "-30px",
+                      }}
+                    ></div>
+
                     <div
                       style={{
                         fontSize: "60px",
@@ -292,27 +398,36 @@ export default function SubjectNotes() {
                       📖
                     </div>
 
-                    <h3 className="fw-bold mt-3">{note.title}</h3>
+                    <h2
+                      className="fw-bold mt-3"
+                      style={{
+                        fontSize: "30px",
+                      }}
+                    >
+                      {note.title}
+                    </h2>
 
                     <p
                       style={{
                         color: "#cbd5e1",
+                        lineHeight: "1.7",
+                        minHeight: "80px",
                       }}
                     >
                       {note.description}
                     </p>
 
-                    <span className="badge bg-success px-3 py-2">🆓 FREE</span>
+                    <span className="badge bg-success mb-4">FREE ACCESS</span>
 
                     <a
                       href={`https://vip-engineer.onrender.com${note.pdf}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-success w-100 fw-bold mt-4"
+                      className="btn btn-success w-100 fw-bold"
                       style={{
-                        borderRadius: "14px",
-
-                        padding: "12px",
+                        borderRadius: "16px",
+                        padding: "14px",
+                        fontSize: "16px",
                       }}
                     >
                       Open PDF 🚀
@@ -322,9 +437,8 @@ export default function SubjectNotes() {
                       <button
                         className="btn btn-danger w-100 fw-bold mt-3"
                         style={{
-                          borderRadius: "14px",
-
-                          padding: "12px",
+                          borderRadius: "16px",
+                          padding: "14px",
                         }}
                         onClick={() => handleDeleteNote(note._id)}
                       >
@@ -333,87 +447,125 @@ export default function SubjectNotes() {
                     )}
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* PREMIUM NOTES */}
 
-        <div>
-          <h2 className="fw-bold mb-4 text-warning">🔥 Premium Notes</h2>
+        {filteredPremium.length > 0 && (
+          <div>
+            <div className="d-flex align-items-center gap-3 mb-4">
+              <h1
+                className="fw-bold"
+                style={{
+                  color: "#facc15",
+                  fontSize: window.innerWidth < 768 ? "34px" : "46px",
+                }}
+              >
+                🔥 Premium Notes
+              </h1>
 
-          <div className="row g-4">
-            {filteredPremium.map((note) => (
-              <div className="col-lg-4 col-md-6" key={note._id}>
-                <div
-                  className="card border-0 shadow-lg h-100"
-                  style={{
-                    borderRadius: "30px",
+              <div
+                style={{
+                  flex: 1,
+                  height: "4px",
+                  background: "linear-gradient(to right,#facc15,transparent)",
+                  borderRadius: "10px",
+                }}
+              ></div>
+            </div>
 
-                    overflow: "hidden",
-
-                    background: "rgba(255,255,255,0.08)",
-
-                    backdropFilter: "blur(10px)",
-
-                    color: "white",
-                  }}
-                >
+            <div className="row g-4">
+              {filteredPremium.map((note) => (
+                <div className="col-xl-3 col-lg-4 col-md-6" key={note._id}>
                   <div
                     style={{
-                      height: "8px",
-
-                      background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                      background:
+                        "linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.16))",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: "28px",
+                      backdropFilter: "blur(12px)",
+                      padding: "26px",
+                      height: "100%",
+                      transition: "0.3s",
+                      position: "relative",
+                      overflow: "hidden",
                     }}
-                  ></div>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-8px)";
 
-                  <div className="card-body p-4">
+                      e.currentTarget.style.boxShadow =
+                        "0 20px 40px rgba(124,58,237,0.3)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0px)";
+
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        width: "110px",
+                        height: "110px",
+                        background: "rgba(255,255,255,0.08)",
+                        borderRadius: "50%",
+                        top: "-30px",
+                        right: "-30px",
+                      }}
+                    ></div>
+
                     <div
                       style={{
                         fontSize: "60px",
                       }}
                     >
-                      📘
+                      🔒
                     </div>
 
-                    <h3 className="fw-bold mt-3">{note.title}</h3>
+                    <h2
+                      className="fw-bold mt-3"
+                      style={{
+                        fontSize: "30px",
+                      }}
+                    >
+                      {note.title}
+                    </h2>
 
                     <p
                       style={{
                         color: "#cbd5e1",
+                        lineHeight: "1.7",
+                        minHeight: "80px",
                       }}
                     >
                       {note.description}
                     </p>
 
-                    <span className="badge bg-danger px-3 py-2">
-                      🔒 PREMIUM
-                    </span>
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                      <span className="badge bg-danger">PREMIUM</span>
 
-                    <h2
-                      className="fw-bold mt-3"
-                      style={{
-                        color: "#60a5fa",
-                      }}
-                    >
-                      ₹{note.price}
-                    </h2>
+                      <h3
+                        className="fw-bold m-0"
+                        style={{
+                          color: "#60a5fa",
+                        }}
+                      >
+                        ₹{note.price}
+                      </h3>
+                    </div>
 
                     {isPurchased(note._id) ? (
                       <button
-                        className="btn btn-success w-100 fw-bold mt-4"
+                        className="btn btn-success w-100 fw-bold"
                         style={{
-                          borderRadius: "14px",
-
-                          padding: "12px",
-
-                          background:
-                            "linear-gradient(to right, #16a34a, #22c55e)",
-
+                          borderRadius: "16px",
+                          padding: "14px",
                           border: "none",
-
-                          fontSize: "16px",
+                          background:
+                            "linear-gradient(to right,#16a34a,#22c55e)",
                         }}
                         onClick={async () => {
                           try {
@@ -450,20 +602,14 @@ export default function SubjectNotes() {
                       </button>
                     ) : (
                       <button
-                        className="btn w-100 fw-bold mt-4"
+                        className="btn w-100 fw-bold"
                         style={{
-                          borderRadius: "14px",
-
-                          padding: "12px",
-
                           background:
-                            "linear-gradient(to right, #2563eb, #7c3aed)",
-
+                            "linear-gradient(to right,#2563eb,#7c3aed)",
                           border: "none",
-
                           color: "white",
-
-                          fontSize: "16px",
+                          borderRadius: "16px",
+                          padding: "14px",
                         }}
                         onClick={() => handlePremiumClick(note)}
                       >
@@ -475,9 +621,8 @@ export default function SubjectNotes() {
                       <button
                         className="btn btn-danger w-100 fw-bold mt-3"
                         style={{
-                          borderRadius: "14px",
-
-                          padding: "12px",
+                          borderRadius: "16px",
+                          padding: "14px",
                         }}
                         onClick={() => handleDeleteNote(note._id)}
                       >
@@ -486,16 +631,27 @@ export default function SubjectNotes() {
                     )}
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* EMPTY */}
 
         {notes.length === 0 && (
-          <div className="text-center mt-5">
-            <h2>No Notes Available 😔</h2>
+          <div
+            className="text-center mt-5"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "30px",
+              padding: "60px 20px",
+              color: "#cbd5e1",
+            }}
+          >
+            <h1 className="fw-bold">No Notes Available 😔</h1>
+
+            <p className="mt-3">Admin has not uploaded notes yet.</p>
           </div>
         )}
       </div>

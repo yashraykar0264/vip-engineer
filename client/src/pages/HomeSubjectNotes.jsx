@@ -13,8 +13,6 @@ export default function HomeSubjectNotes() {
 
   const [search, setSearch] = useState("");
 
-  // FETCH NOTES
-
   useEffect(() => {
     fetchNotes();
   }, [name]);
@@ -31,7 +29,7 @@ export default function HomeSubjectNotes() {
     }
   };
 
-  // FILTERED NOTES
+  // FILTER
 
   const filteredNotes = useMemo(() => {
     return notes.filter((note) =>
@@ -47,24 +45,25 @@ export default function HomeSubjectNotes() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg,#020617,#071028,#1e1b4b)",
-        overflow: "hidden",
-        position: "relative",
+        background:
+          "radial-gradient(circle at top left,#172554 0%,#020617 45%,#1e1b4b 100%)",
+        overflowX: "hidden",
+        color: "white",
       }}
     >
-      {/* BACKGROUND GLOW */}
+      {/* GLOW */}
 
       <div
         style={{
           position: "fixed",
-          width: "350px",
-          height: "350px",
+          width: "300px",
+          height: "300px",
           background: "#2563eb",
           borderRadius: "50%",
           top: "-100px",
           left: "-100px",
           filter: "blur(120px)",
-          opacity: 0.25,
+          opacity: 0.2,
           zIndex: 0,
         }}
       ></div>
@@ -72,14 +71,14 @@ export default function HomeSubjectNotes() {
       <div
         style={{
           position: "fixed",
-          width: "350px",
-          height: "350px",
+          width: "300px",
+          height: "300px",
           background: "#7c3aed",
           borderRadius: "50%",
           bottom: "-100px",
           right: "-100px",
           filter: "blur(120px)",
-          opacity: 0.25,
+          opacity: 0.2,
           zIndex: 0,
         }}
       ></div>
@@ -87,40 +86,38 @@ export default function HomeSubjectNotes() {
       {/* NAVBAR */}
 
       <nav
-        className="navbar navbar-dark px-4 py-3"
+        className="px-3 px-md-5 py-3 d-flex justify-content-between align-items-center"
         style={{
           background: "rgba(255,255,255,0.05)",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           position: "sticky",
           top: 0,
-          zIndex: 100,
+          zIndex: 1000,
         }}
       >
-        <div className="container-fluid">
-          <h2
-            className="fw-bold text-white m-0"
-            style={{
-              letterSpacing: "1px",
-            }}
-          >
-            VIP Engineer 🚀
-          </h2>
+        <h2
+          className="fw-bold m-0"
+          style={{
+            fontSize: window.innerWidth < 768 ? "28px" : "38px",
+          }}
+        >
+          VIP Engineer 🚀
+        </h2>
 
-          <button
-            className="btn fw-bold"
-            style={{
-              background: "linear-gradient(to right,#2563eb,#7c3aed)",
-              color: "white",
-              border: "none",
-              borderRadius: "14px",
-              padding: "10px 20px",
-            }}
-            onClick={() => navigate("/")}
-          >
-            Home 🏠
-          </button>
-        </div>
+        <button
+          className="btn fw-bold"
+          style={{
+            background: "linear-gradient(to right,#2563eb,#7c3aed)",
+            color: "white",
+            border: "none",
+            borderRadius: "14px",
+            padding: "10px 22px",
+          }}
+          onClick={() => navigate("/")}
+        >
+          Home 🏠
+        </button>
       </nav>
 
       <div
@@ -137,150 +134,101 @@ export default function HomeSubjectNotes() {
         <div className="text-center mb-5">
           <div
             style={{
-              fontSize: "90px",
+              fontSize: window.innerWidth < 768 ? "70px" : "90px",
             }}
           >
             📂
           </div>
 
           <h1
-            className="fw-bold text-white"
+            className="fw-bold"
             style={{
-              fontSize: "80px",
-              letterSpacing: "2px",
+              fontSize: window.innerWidth < 768 ? "52px" : "90px",
+              lineHeight: "1",
             }}
           >
             {name}
           </h1>
 
           <p
+            className="mx-auto mt-4"
             style={{
-              color: "#cbd5e1",
-              fontSize: "22px",
+              maxWidth: "750px",
+              color: "#94a3b8",
+              fontSize: window.innerWidth < 768 ? "16px" : "22px",
+              lineHeight: "1.8",
             }}
           >
-            Explore Free & Premium Engineering Resources 🚀
+            Explore curated engineering resources, handwritten PDFs and premium
+            learning material 🚀
           </p>
         </div>
 
         {/* STATS */}
 
         <div className="row g-4 mb-5">
-          <div className="col-md-4">
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: "28px",
-                padding: "30px",
-                textAlign: "center",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
+          {[
+            {
+              icon: "📚",
+              title: "Total Notes",
+              value: notes.length,
+              color: "#60a5fa",
+            },
+
+            {
+              icon: "🆓",
+              title: "Free Notes",
+              value: freeNotes.length,
+              color: "#22c55e",
+            },
+
+            {
+              icon: "🔒",
+              title: "Premium",
+              value: premiumNotes.length,
+              color: "#facc15",
+            },
+          ].map((item, index) => (
+            <div className="col-lg-4 col-md-6" key={index}>
               <div
+                className="h-100 text-center"
                 style={{
-                  fontSize: "55px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "28px",
+                  backdropFilter: "blur(12px)",
+                  padding: "35px 20px",
                 }}
               >
-                📚
+                <div
+                  style={{
+                    fontSize: "50px",
+                  }}
+                >
+                  {item.icon}
+                </div>
+
+                <h1
+                  className="fw-bold mt-3"
+                  style={{
+                    fontSize: "48px",
+                    color: item.color,
+                  }}
+                >
+                  {item.value}
+                </h1>
+
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "18px",
+                  }}
+                >
+                  {item.title}
+                </p>
               </div>
-
-              <h1
-                className="fw-bold text-white mt-2"
-                style={{
-                  fontSize: "50px",
-                }}
-              >
-                {notes.length}
-              </h1>
-
-              <p
-                style={{
-                  color: "#cbd5e1",
-                }}
-              >
-                Total Notes
-              </p>
             </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: "28px",
-                padding: "30px",
-                textAlign: "center",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "55px",
-                }}
-              >
-                🆓
-              </div>
-
-              <h1
-                className="fw-bold mt-2"
-                style={{
-                  color: "#22c55e",
-                  fontSize: "50px",
-                }}
-              >
-                {freeNotes.length}
-              </h1>
-
-              <p
-                style={{
-                  color: "#cbd5e1",
-                }}
-              >
-                Free Notes
-              </p>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: "28px",
-                padding: "30px",
-                textAlign: "center",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "55px",
-                }}
-              >
-                🔒
-              </div>
-
-              <h1
-                className="fw-bold mt-2"
-                style={{
-                  color: "#facc15",
-                  fontSize: "50px",
-                }}
-              >
-                {premiumNotes.length}
-              </h1>
-
-              <p
-                style={{
-                  color: "#cbd5e1",
-                }}
-              >
-                Premium Notes
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* SEARCH */}
@@ -289,17 +237,15 @@ export default function HomeSubjectNotes() {
           <input
             type="text"
             placeholder="🔍 Search Notes..."
-            className="form-control"
+            className="form-control p-3"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
-              padding: "18px",
               borderRadius: "18px",
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(255,255,255,0.08)",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
               color: "white",
-              fontSize: "18px",
-              backdropFilter: "blur(10px)",
+              fontSize: "17px",
             }}
           />
         </div>
@@ -313,7 +259,7 @@ export default function HomeSubjectNotes() {
                 className="fw-bold"
                 style={{
                   color: "#22c55e",
-                  fontSize: "45px",
+                  fontSize: window.innerWidth < 768 ? "34px" : "46px",
                 }}
               >
                 🆓 Free Notes
@@ -321,8 +267,8 @@ export default function HomeSubjectNotes() {
 
               <div
                 style={{
-                  height: "4px",
                   flex: 1,
+                  height: "4px",
                   background: "linear-gradient(to right,#22c55e,transparent)",
                   borderRadius: "10px",
                 }}
@@ -331,30 +277,27 @@ export default function HomeSubjectNotes() {
 
             <div className="row g-4 mb-5">
               {freeNotes.map((note) => (
-                <div className="col-md-6 col-lg-4" key={note._id}>
+                <div className="col-xl-3 col-lg-4 col-md-6" key={note._id}>
                   <div
                     style={{
-                      background: "rgba(255,255,255,0.07)",
-                      borderRadius: "30px",
-                      padding: "30px",
-                      color: "white",
-                      backdropFilter: "blur(12px)",
+                      background: "rgba(255,255,255,0.06)",
                       border: "1px solid rgba(255,255,255,0.08)",
-                      transition: "0.3s",
+                      borderRadius: "28px",
+                      backdropFilter: "blur(12px)",
+                      padding: "26px",
                       height: "100%",
                       position: "relative",
                       overflow: "hidden",
+                      transition: "0.3s",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform =
-                        "translateY(-10px) scale(1.02)";
+                      e.currentTarget.style.transform = "translateY(-8px)";
 
                       e.currentTarget.style.boxShadow =
-                        "0 20px 40px rgba(34,197,94,0.25)";
+                        "0 20px 40px rgba(34,197,94,0.2)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform =
-                        "translateY(0px) scale(1)";
+                      e.currentTarget.style.transform = "translateY(0px)";
 
                       e.currentTarget.style.boxShadow = "none";
                     }}
@@ -362,9 +305,9 @@ export default function HomeSubjectNotes() {
                     <div
                       style={{
                         position: "absolute",
-                        width: "120px",
-                        height: "120px",
-                        background: "rgba(34,197,94,0.15)",
+                        width: "110px",
+                        height: "110px",
+                        background: "rgba(34,197,94,0.12)",
                         borderRadius: "50%",
                         top: "-30px",
                         right: "-30px",
@@ -373,18 +316,26 @@ export default function HomeSubjectNotes() {
 
                     <div
                       style={{
-                        fontSize: "70px",
+                        fontSize: "60px",
                       }}
                     >
                       📖
                     </div>
 
-                    <h2 className="fw-bold mt-3">{note.title}</h2>
+                    <h2
+                      className="fw-bold mt-3"
+                      style={{
+                        fontSize: "30px",
+                      }}
+                    >
+                      {note.title}
+                    </h2>
 
                     <p
                       style={{
                         color: "#cbd5e1",
-                        minHeight: "60px",
+                        lineHeight: "1.7",
+                        minHeight: "80px",
                       }}
                     >
                       {note.description}
@@ -400,7 +351,7 @@ export default function HomeSubjectNotes() {
                       style={{
                         borderRadius: "16px",
                         padding: "14px",
-                        fontSize: "17px",
+                        fontSize: "16px",
                       }}
                     >
                       Open PDF 🚀
@@ -412,7 +363,7 @@ export default function HomeSubjectNotes() {
           </>
         )}
 
-        {/* PREMIUM NOTES */}
+        {/* PREMIUM */}
 
         {premiumNotes.length > 0 && (
           <>
@@ -421,7 +372,7 @@ export default function HomeSubjectNotes() {
                 className="fw-bold"
                 style={{
                   color: "#facc15",
-                  fontSize: "45px",
+                  fontSize: window.innerWidth < 768 ? "34px" : "46px",
                 }}
               >
                 🔒 Premium Notes
@@ -429,8 +380,8 @@ export default function HomeSubjectNotes() {
 
               <div
                 style={{
-                  height: "4px",
                   flex: 1,
+                  height: "4px",
                   background: "linear-gradient(to right,#facc15,transparent)",
                   borderRadius: "10px",
                 }}
@@ -439,31 +390,28 @@ export default function HomeSubjectNotes() {
 
             <div className="row g-4">
               {premiumNotes.map((note) => (
-                <div className="col-md-6 col-lg-4" key={note._id}>
+                <div className="col-xl-3 col-lg-4 col-md-6" key={note._id}>
                   <div
                     style={{
                       background:
-                        "linear-gradient(135deg,rgba(37,99,235,0.15),rgba(124,58,237,0.18))",
-                      borderRadius: "30px",
-                      padding: "30px",
-                      color: "white",
-                      backdropFilter: "blur(12px)",
+                        "linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.16))",
                       border: "1px solid rgba(255,255,255,0.08)",
-                      transition: "0.3s",
+                      borderRadius: "28px",
+                      backdropFilter: "blur(12px)",
+                      padding: "26px",
                       height: "100%",
                       position: "relative",
                       overflow: "hidden",
+                      transition: "0.3s",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform =
-                        "translateY(-10px) scale(1.02)";
+                      e.currentTarget.style.transform = "translateY(-8px)";
 
                       e.currentTarget.style.boxShadow =
-                        "0 20px 40px rgba(124,58,237,0.35)";
+                        "0 20px 40px rgba(124,58,237,0.3)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform =
-                        "translateY(0px) scale(1)";
+                      e.currentTarget.style.transform = "translateY(0px)";
 
                       e.currentTarget.style.boxShadow = "none";
                     }}
@@ -471,8 +419,8 @@ export default function HomeSubjectNotes() {
                     <div
                       style={{
                         position: "absolute",
-                        width: "130px",
-                        height: "130px",
+                        width: "110px",
+                        height: "110px",
                         background: "rgba(255,255,255,0.08)",
                         borderRadius: "50%",
                         top: "-30px",
@@ -482,18 +430,26 @@ export default function HomeSubjectNotes() {
 
                     <div
                       style={{
-                        fontSize: "70px",
+                        fontSize: "60px",
                       }}
                     >
                       🔒
                     </div>
 
-                    <h2 className="fw-bold mt-3">{note.title}</h2>
+                    <h2
+                      className="fw-bold mt-3"
+                      style={{
+                        fontSize: "30px",
+                      }}
+                    >
+                      {note.title}
+                    </h2>
 
                     <p
                       style={{
                         color: "#cbd5e1",
-                        minHeight: "60px",
+                        lineHeight: "1.7",
+                        minHeight: "80px",
                       }}
                     >
                       {note.description}
@@ -506,22 +462,18 @@ export default function HomeSubjectNotes() {
                     <button
                       className="btn w-100 fw-bold"
                       style={{
+                        background: "linear-gradient(to right,#2563eb,#7c3aed)",
+                        border: "none",
+                        color: "white",
                         borderRadius: "16px",
                         padding: "14px",
-                        fontSize: "17px",
-                        background: "linear-gradient(to right,#2563eb,#7c3aed)",
-                        color: "white",
-                        border: "none",
+                        fontSize: "16px",
                       }}
                       onClick={() => {
                         const token = localStorage.getItem("token");
 
                         if (!token) {
-                          navigate("/login", {
-                            state: {
-                              message: "Login to access premium dashboard 🔒",
-                            },
-                          });
+                          navigate("/login");
 
                           return;
                         }
@@ -545,8 +497,9 @@ export default function HomeSubjectNotes() {
             className="text-center mt-5"
             style={{
               background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: "30px",
-              padding: "60px",
+              padding: "60px 20px",
               color: "#cbd5e1",
             }}
           >
