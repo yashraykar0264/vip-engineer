@@ -43,7 +43,7 @@ export default function Home() {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100%",
+          width: "75%",
           zIndex: 9999,
           background: "rgba(15,23,42,0.85)",
           backdropFilter: "blur(12px)",
