@@ -12,9 +12,11 @@ import Dashboard from "./pages/Dashboard";
 import AdminRequests from "./pages/AdminRequests";
 import AddNote from "./pages/AddNote";
 import SubjectNotes from "./pages/SubjectNotes";
-import AddHomeFolder from "./pages/AddHomeFolder";
 
+import AddHomeFolder from "./pages/AddHomeFolder";
 import AddHomeFiles from "./pages/AddHomeFiles";
+import HomeSubjectNotes from "./pages/HomeSubjectNotes";
+
 export default function App() {
   return (
     <Routes>
@@ -36,12 +38,17 @@ export default function App() {
 
       <Route path="/profile" element={<Profile />} />
 
+      {/* DASHBOARD NOTES */}
+
       <Route path="/subject/:name" element={<SubjectNotes />} />
+
+      {/* HOME MARKETPLACE */}
+
       <Route path="/add-home-folder" element={<AddHomeFolder />} />
 
       <Route path="/add-home-files" element={<AddHomeFiles />} />
 
-     
+      <Route path="/home-subject/:name" element={<HomeSubjectNotes />} />
     </Routes>
   );
 }

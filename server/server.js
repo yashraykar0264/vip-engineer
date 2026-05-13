@@ -5,12 +5,11 @@ const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const ExploreSubject = require("./models/ExploreSubject");
+
 require("dotenv").config();
 
 const connectDB = require("./config/db");
-const HomeFolder = require("./models/HomeFolder");
-const HomeNote = require("./models/HomeNote");
+
 const authMiddleware = require("./middleware/authMiddleware");
 const adminMiddleware = require("./middleware/adminMiddleware");
 
@@ -18,6 +17,9 @@ const User = require("./models/User");
 const Note = require("./models/Note");
 const Purchase = require("./models/Purchase");
 const Folder = require("./models/Folder");
+
+const HomeFolder = require("./models/HomeFolder");
+const HomeNote = require("./models/HomeNote");
 
 const app = express();
 
@@ -217,8 +219,10 @@ app.post("/login", async (req, res) => {
 });
 
 // ================================
-// ADD NOTE
+// DASHBOARD NOTES
 // ================================
+
+// ADD NOTE
 
 app.post(
   "/add-note",
@@ -243,7 +247,6 @@ app.post(
         title,
         description,
         price,
-
         folder,
         pdf: `/uploads/${req.file.filename}`,
       });
@@ -263,9 +266,7 @@ app.post(
   },
 );
 
-// ================================
 // CREATE FOLDER
-// ================================
 
 app.post(
   "/create-folder",
@@ -307,31 +308,23 @@ app.post(
   },
 );
 
-// ================================
 // GET FOLDERS
-// ================================
 
-app.get(
-  "/folders",
+app.get("/folders", async (req, res) => {
+  try {
+    const folders = await Folder.find();
 
-  async (req, res) => {
-    try {
-      const folders = await Folder.find();
+    res.json(folders);
+  } catch (error) {
+    console.log(error);
 
-      res.json(folders);
-    } catch (error) {
-      console.log(error);
+    res.status(500).json({
+      message: "Failed To Fetch Folders",
+    });
+  }
+});
 
-      res.status(500).json({
-        message: "Failed To Fetch Folders",
-      });
-    }
-  },
-);
-
-// ================================
 // DELETE FOLDER
-// ================================
 
 app.delete(
   "/delete-folder/:id",
@@ -369,9 +362,7 @@ app.delete(
   },
 );
 
-// ================================
-// FETCH NOTES
-// ================================
+// GET NOTES
 
 app.get("/notes", async (req, res) => {
   try {
@@ -387,9 +378,61 @@ app.get("/notes", async (req, res) => {
   }
 });
 
+// DELETE NOTE
+
+app.delete(
+  "/delete-note/:id",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      const noteId = req.params.id;
+
+      const note = await Note.findById(noteId);
+
+      if (!note) {
+        return res.status(404).json({
+          message: "Note Not Found",
+        });
+      }
+
+      await Purchase.deleteMany({
+        noteId,
+      });
+
+      if (note.pdf) {
+        const cleanPdf = note.pdf.replace("/uploads/", "");
+
+        const pdfPath = path.join(__dirname, "uploads", cleanPdf);
+
+        if (fs.existsSync(pdfPath)) {
+          fs.unlinkSync(pdfPath);
+        }
+      }
+
+      await Note.findByIdAndDelete(noteId);
+
+      res.json({
+        message: "Note Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Delete Failed",
+      });
+    }
+  },
+);
+
 // ================================
+// PURCHASE SYSTEM
+// ================================
+
 // PURCHASE REQUEST
-// ================================
 
 app.post(
   "/purchase",
@@ -442,9 +485,7 @@ app.post(
   },
 );
 
-// ================================
 // PURCHASE REQUESTS
-// ================================
 
 app.get(
   "/purchase-requests",
@@ -470,9 +511,7 @@ app.get(
   },
 );
 
-// ================================
 // APPROVE PAYMENT
-// ================================
 
 app.patch(
   "/purchase/approve/:id",
@@ -508,9 +547,31 @@ app.patch(
   },
 );
 
-// ================================
+// MY PURCHASES
+
+app.get(
+  "/my-purchases",
+
+  authMiddleware,
+
+  async (req, res) => {
+    try {
+      const purchases = await Purchase.find({
+        userId: req.user.id,
+      }).populate("noteId");
+
+      res.json(purchases);
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Fetch Purchases",
+      });
+    }
+  },
+);
+
 // SECURE PDF VIEW
-// ================================
 
 app.get(
   "/notes/view/:id",
@@ -555,37 +616,13 @@ app.get(
 );
 
 // ================================
-// MY PURCHASES
+// HOME MARKETPLACE
 // ================================
 
-app.get(
-  "/my-purchases",
+// CREATE HOME FOLDER
 
-  authMiddleware,
-
-  async (req, res) => {
-    try {
-      const purchases = await Purchase.find({
-        userId: req.user.id,
-      }).populate("noteId");
-
-      res.json(purchases);
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        message: "Failed To Fetch Purchases",
-      });
-    }
-  },
-);
-
-// ================================
-// DELETE NOTE
-// ================================
-
-app.delete(
-  "/delete-note/:id",
+app.post(
+  "/create-home-folder",
 
   authMiddleware,
 
@@ -593,32 +630,102 @@ app.delete(
 
   async (req, res) => {
     try {
-      const noteId = req.params.id;
+      const { name, emoji, color } = req.body;
 
-      const note = await Note.findById(noteId);
+      const existingFolder = await HomeFolder.findOne({
+        name,
+      });
 
-      if (!note) {
-        return res.status(404).json({
-          message: "Note Not Found",
+      if (existingFolder) {
+        return res.status(400).json({
+          message: "Folder Already Exists",
         });
       }
 
-      await Purchase.deleteMany({
-        noteId,
+      const folder = new HomeFolder({
+        name,
+        emoji,
+        color,
       });
 
-      if (note.pdf && typeof note.pdf === "string") {
-        const pdfPath = path.join(__dirname, "uploads", note.pdf);
+      await folder.save();
 
-        if (fs.existsSync(pdfPath)) {
-          fs.unlinkSync(pdfPath);
+      res.json({
+        message: "Home Folder Created 🚀",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Create Folder",
+      });
+    }
+  },
+);
+
+// GET HOME FOLDERS
+
+app.get(
+  "/home-folders",
+
+  async (req, res) => {
+    try {
+      const folders = await HomeFolder.find();
+
+      res.json(folders);
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Fetch Folders",
+      });
+    }
+  },
+);
+
+// DELETE HOME FOLDER
+
+app.delete(
+  "/delete-home-folder/:id",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      const folder = await HomeFolder.findById(req.params.id);
+
+      if (!folder) {
+        return res.status(404).json({
+          message: "Folder Not Found",
+        });
+      }
+
+      const notes = await HomeNote.find({
+        folder: folder.name,
+      });
+
+      for (const note of notes) {
+        if (note.pdf) {
+          const cleanPdf = note.pdf.replace("/uploads/", "");
+
+          const pdfPath = path.join(__dirname, "uploads", cleanPdf);
+
+          if (fs.existsSync(pdfPath)) {
+            fs.unlinkSync(pdfPath);
+          }
         }
       }
 
-      await Note.findByIdAndDelete(noteId);
+      await HomeNote.deleteMany({
+        folder: folder.name,
+      });
+
+      await HomeFolder.findByIdAndDelete(req.params.id);
 
       res.json({
-        message: "Note Deleted Successfully",
+        message: "Folder & Files Deleted Successfully",
       });
     } catch (error) {
       console.log(error);
@@ -630,206 +737,113 @@ app.delete(
   },
 );
 
-// // ================================
-// // EXPLORE SUBJECTS
-// // ================================
+// ADD HOME NOTE
 
-// // GET SUBJECTS
+app.post(
+  "/add-home-note",
 
-// app.get("/explore-subjects", async (req, res) => {
-//   try {
-//     const subjects = await ExploreSubject.find();
+  authMiddleware,
 
-//     res.json(subjects);
-//   } catch (error) {
-//     console.log(error);
+  adminMiddleware,
 
-//     res.status(500).json({
-//       message: "Failed To Fetch Subjects",
-//     });
-//   }
-// });
+  upload.single("pdf"),
 
-// // CREATE SUBJECT
+  async (req, res) => {
+    try {
+      const { title, description, folder, type } = req.body;
 
-// app.post(
-//   "/create-explore-subject",
+      if (type === "free" && !req.file) {
+        return res.status(400).json({
+          message: "PDF Required For Free Notes",
+        });
+      }
 
-//   authMiddleware,
+      const note = new HomeNote({
+        title,
+        description,
+        folder,
+        type,
+        pdf: req.file ? `/uploads/${req.file.filename}` : "",
+      });
 
-//   adminMiddleware,
+      await note.save();
 
-//   async (req, res) => {
-//     try {
-//       const { title, emoji, color } = req.body;
+      res.json({
+        message: "Home Note Added 🚀",
+      });
+    } catch (error) {
+      console.log(error);
 
-//       const newSubject = new ExploreSubject({
-//         title,
-//         emoji,
-//         color,
-//       });
+      res.status(500).json({
+        message: "Failed To Add Home Note",
+      });
+    }
+  },
+);
 
-//       await newSubject.save();
+// GET HOME NOTES
 
-//       res.json({
-//         message: "Subject Added Successfully",
-//       });
-//     } catch (error) {
-//       console.log(error);
+app.get(
+  "/home-notes",
 
-//       res.status(500).json({
-//         message: "Failed To Add Subject",
-//       });
-//     }
-//   },
-// );
+  async (req, res) => {
+    try {
+      const notes = await HomeNote.find();
 
-// // DELETE SUBJECT
+      res.json(notes);
+    } catch (error) {
+      console.log(error);
 
-// app.delete(
-//   "/delete-explore-subject/:id",
+      res.status(500).json({
+        message: "Failed To Fetch Home Notes",
+      });
+    }
+  },
+);
 
-//   authMiddleware,
+// DELETE HOME NOTE
 
-//   adminMiddleware,
+app.delete(
+  "/delete-home-note/:id",
 
-//   async (req, res) => {
-//     try {
-//       await ExploreSubject.findByIdAndDelete(req.params.id);
+  authMiddleware,
 
-//       res.json({
-//         message: "Subject Deleted Successfully",
-//       });
-//     } catch (error) {
-//       console.log(error);
+  adminMiddleware,
 
-//       res.status(500).json({
-//         message: "Delete Failed",
-//       });
-//     }
-//   },
-// );
+  async (req, res) => {
+    try {
+      const note = await HomeNote.findById(req.params.id);
 
-// // UPDATE SUBJECT
+      if (!note) {
+        return res.status(404).json({
+          message: "Home Note Not Found",
+        });
+      }
 
-// app.put(
-//   "/update-explore-subject/:id",
+      if (note.pdf) {
+        const cleanPdf = note.pdf.replace("/uploads/", "");
 
-//   authMiddleware,
+        const pdfPath = path.join(__dirname, "uploads", cleanPdf);
 
-//   adminMiddleware,
+        if (fs.existsSync(pdfPath)) {
+          fs.unlinkSync(pdfPath);
+        }
+      }
 
-//   async (req, res) => {
-//     try {
-//       const updated = await ExploreSubject.findByIdAndUpdate(
-//         req.params.id,
-//         req.body,
-//         {
-//           new: true,
-//         },
-//       );
+      await HomeNote.findByIdAndDelete(req.params.id);
 
-//       res.json(updated);
-//     } catch (error) {
-//       console.log(error);
+      res.json({
+        message: "Home Note Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error);
 
-//       res.status(500).json({
-//         message: "Update Failed",
-//       });
-//     }
-//   },
-// );
-
-// // ================================
-
-// // ADD HOME NOTE
-
-// app.post(
-//   "/add-home-note",
-
-//   authMiddleware,
-
-//   adminMiddleware,
-
-//   upload.single("pdf"),
-
-//   async (req, res) => {
-//     try {
-//       const { title, description, folder, type } = req.body;
-
-//       // FREE NOTE => PDF REQUIRED
-
-//       if (type === "free" && !req.file) {
-//         return res.status(400).json({
-//           message: "PDF Required For Free Notes",
-//         });
-//       }
-
-//       const note = new HomeNote({
-//         title,
-//         description,
-//         folder,
-//         type,
-
-//         pdf: req.file ? `/uploads/${req.file.filename}` : "",
-//       });
-
-//       await note.save();
-
-//       res.json({
-//         message: "Home Note Added 🚀",
-//       });
-//     } catch (error) {
-//       console.log(error);
-
-//       res.status(500).json({
-//         message: "Failed",
-//       });
-//     }
-//   },
-// );
-
-// // GET HOME NOTES
-
-// app.get("/home-notes", async (req, res) => {
-//   try {
-//     const notes = await HomeNote.find();
-
-//     res.json(notes);
-//   } catch (error) {
-//     console.log(error);
-
-//     res.status(500).json({
-//       message: "Failed",
-//     });
-//   }
-// });
-
-// // DELETE HOME NOTE
-
-// app.delete(
-//   "/delete-home-note/:id",
-
-//   authMiddleware,
-
-//   adminMiddleware,
-
-//   async (req, res) => {
-//     try {
-//       await HomeNote.findByIdAndDelete(req.params.id);
-
-//       res.json({
-//         message: "Deleted Successfully",
-//       });
-//     } catch (error) {
-//       console.log(error);
-
-//       res.status(500).json({
-//         message: "Delete Failed",
-//       });
-//     }
-//   },
-// );
+      res.status(500).json({
+        message: "Delete Failed",
+      });
+    }
+  },
+);
 
 // ================================
 // SERVER
