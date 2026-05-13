@@ -203,7 +203,20 @@ export default function Home() {
             ].map((subject, index) => (
               <div className="col-md-4 col-lg-3" key={index}>
                 <div
-                  onClick={() => navigate(`/subject/${subject.name}`)}
+                  onClick={() => {
+                    if (!isLoggedIn) {
+                      navigate("/login", {
+                        state: {
+                          message:
+                            "Please login/signup first to access notes 🔒",
+                        },
+                      });
+
+                      return;
+                    }
+
+                    navigate(`/subject/${subject.name}`);
+                  }}
                   className="card border-0 shadow-lg h-100 text-white"
                   style={{
                     borderRadius: "24px",

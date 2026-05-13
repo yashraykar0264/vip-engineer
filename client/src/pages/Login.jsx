@@ -120,17 +120,22 @@ export default function Login() {
           </p>
         </div>
 
-        {location.state?.message && (
-          <div className="alert alert-warning alert-dismissible fade show" role="alert">
-            {location.state.message}
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
-          </div>
-        )}
+      {
+  location.state?.message && (
+    <div
+      className="text-center mb-4"
+      style={{
+        background: "rgba(239,68,68,0.2)",
+        color: "#fecaca",
+        padding: "12px",
+        borderRadius: "12px",
+        fontWeight: "bold",
+      }}
+    >
+      {location.state.message}
+    </div>
+  );
+}
 
         {/* FORM */}
 
