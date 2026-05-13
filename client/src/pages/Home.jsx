@@ -11,7 +11,7 @@ export default function Home() {
 
   const [subjects, setSubjects] = useState([]);
 
-  // FETCH EXPLORE SUBJECTS
+  // FETCH HOME FOLDERS
 
   useEffect(() => {
     fetchSubjects();
@@ -19,7 +19,7 @@ export default function Home() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await API.get("/explore-subjects");
+      const response = await API.get("/home-folders");
 
       setSubjects(response.data);
     } catch (error) {
@@ -30,8 +30,6 @@ export default function Home() {
   // PREMIUM CLICK
 
   const handlePremiumClick = () => {
-    navigate(`/home-subject/${subject.name}`);
-
     navigate("/dashboard");
   };
 
@@ -370,30 +368,34 @@ export default function Home() {
               <div className="col-md-4 col-lg-3" key={subject._id}>
                 <div
                   onClick={() => {
-                    if (!isLoggedIn) {
-                      navigate("/login", {
-                        state: {
-                          message:
-                            "Please login/signup first to access notes 🔒",
-                        },
-                      });
-
-                      return;
-                    }
-
-                    navigate(`/subject/${subject.title}`);
+                    navigate(`/home-subject/${subject.name}`);
                   }}
                   className="h-100"
                   style={{
-                    background: subject.color,
-                    borderRadius: "32px",
-                    padding: "40px 25px",
+                    background: `linear-gradient(135deg, ${subject.color}, #111827)`,
+                    borderRadius: "28px",
+                    padding: "28px 22px",
                     cursor: "pointer",
                     transition: "0.3s",
                     color: "white",
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
+                    boxShadow: "0 15px 35px rgba(0,0,0,0.25)",
                     position: "relative",
                     overflow: "hidden",
+                    backdropFilter: "blur(10px)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform =
+                      "translateY(-10px) scale(1.03)";
+
+                    e.currentTarget.style.boxShadow =
+                      "0 25px 45px rgba(37,99,235,0.35)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform =
+                      "translateY(0px) scale(1)";
+
+                    e.currentTarget.style.boxShadow =
+                      "0 15px 35px rgba(0,0,0,0.25)";
                   }}
                 >
                   <div
@@ -401,7 +403,7 @@ export default function Home() {
                       position: "absolute",
                       width: "120px",
                       height: "120px",
-                      background: "rgba(255,255,255,0.1)",
+                      background: "rgba(255,255,255,0.08)",
                       borderRadius: "50%",
                       top: "-30px",
                       right: "-30px",
@@ -410,31 +412,42 @@ export default function Home() {
 
                   <div
                     style={{
-                      fontSize: "75px",
+                      fontSize: "65px",
                     }}
                   >
                     {subject.emoji}
                   </div>
 
-                  <h2 className="fw-bold mt-4">{subject.title}</h2>
+                  <h2
+                    className="fw-bold mt-3"
+                    style={{
+                      fontSize: "30px",
+                    }}
+                  >
+                    {subject.name}
+                  </h2>
 
                   <p
                     className="mt-3"
                     style={{
-                      color: "rgba(255,255,255,0.85)",
+                      color: "rgba(255,255,255,0.82)",
+                      minHeight: "50px",
+                      fontSize: "15px",
                     }}
                   >
-                    Open premium notes and study materials 🚀
+                    Explore curated engineering notes, PDFs & premium resources
+                    🚀
                   </p>
 
                   <button
-                    className="btn fw-bold mt-4"
+                    className="btn fw-bold mt-3"
                     style={{
-                      background: "rgba(255,255,255,0.15)",
+                      background: "rgba(255,255,255,0.12)",
                       color: "white",
                       borderRadius: "14px",
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      padding: "12px 22px",
+                      border: "1px solid rgba(255,255,255,0.18)",
+                      padding: "10px 18px",
+                      width: "100%",
                     }}
                   >
                     Explore →
