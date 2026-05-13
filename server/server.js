@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-
+const ExploreSubject = require("./models/ExploreSubject");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -242,7 +242,7 @@ app.post(
         title,
         description,
         price,
-        
+
         folder,
         pdf: `/uploads/${req.file.filename}`,
       });
@@ -624,6 +624,116 @@ app.delete(
 
       res.status(500).json({
         message: "Delete Failed",
+      });
+    }
+  },
+);
+
+// ================================
+// EXPLORE SUBJECTS
+// ================================
+
+// GET SUBJECTS
+
+app.get("/explore-subjects", async (req, res) => {
+  try {
+    const subjects = await ExploreSubject.find();
+
+    res.json(subjects);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Failed To Fetch Subjects",
+    });
+  }
+});
+
+// CREATE SUBJECT
+
+app.post(
+  "/create-explore-subject",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      const { title, emoji, color } = req.body;
+
+      const newSubject = new ExploreSubject({
+        title,
+        emoji,
+        color,
+      });
+
+      await newSubject.save();
+
+      res.json({
+        message: "Subject Added Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Failed To Add Subject",
+      });
+    }
+  },
+);
+
+// DELETE SUBJECT
+
+app.delete(
+  "/delete-explore-subject/:id",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      await ExploreSubject.findByIdAndDelete(req.params.id);
+
+      res.json({
+        message: "Subject Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Delete Failed",
+      });
+    }
+  },
+);
+
+// UPDATE SUBJECT
+
+app.put(
+  "/update-explore-subject/:id",
+
+  authMiddleware,
+
+  adminMiddleware,
+
+  async (req, res) => {
+    try {
+      const updated = await ExploreSubject.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        },
+      );
+
+      res.json(updated);
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Update Failed",
       });
     }
   },

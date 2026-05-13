@@ -194,6 +194,12 @@ export default function Dashboard() {
             {role === "admin" && (
               <>
                 <button
+                  className="btn btn-primary fw-bold"
+                  onClick={() => navigate("/manage-explore-subjects")}
+                >
+                  Home Subjects 🌟
+                </button>
+                <button
                   className="btn btn-warning fw-bold"
                   onClick={() => navigate("/add-note")}
                 >

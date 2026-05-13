@@ -1,17 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
+
+import API from "../services/api";
 
 export default function Home() {
   const navigate = useNavigate();
 
   const isLoggedIn = localStorage.getItem("token");
 
+  const [subjects, setSubjects] = useState([]);
+
+  // FETCH EXPLORE SUBJECTS
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
+  const fetchSubjects = async () => {
+    try {
+      const response = await API.get("/explore-subjects");
+
+      setSubjects(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // PREMIUM CLICK
+
   const handlePremiumClick = () => {
     if (!isLoggedIn) {
-      alert("Please Login To Access Premium Notes 🔒");
-
-      navigate("/login");
+      navigate("/login", {
+        state: {
+          message: "Please login/signup first 🔒",
+        },
+      });
 
       return;
     }
@@ -19,189 +43,339 @@ export default function Home() {
     navigate("/dashboard");
   };
 
-  const freeNotes = [
-    {
-      title: "CN Quick Revision",
-      desc: "Important CN viva and exam shortcuts PDF.",
-      price: "FREE",
-      emoji: "🌐",
-    },
-
-    {
-      title: "DBMS Viva Notes",
-      desc: "Most asked DBMS viva questions and answers.",
-      price: "FREE",
-      emoji: "🗂️",
-    },
-
-    {
-      title: "Aptitude Cheatsheet",
-      desc: "Placement aptitude tricks and formulas.",
-      price: "FREE",
-      emoji: "🧠",
-    },
-  ];
-
-  const premiumNotes = [
-    {
-      title: "DSA Master Notes",
-      desc: "Handwritten placement focused DSA notes.",
-      price: "₹49",
-      emoji: "🔥",
-    },
-
-    {
-      title: "OOP Premium Notes",
-      desc: "Easy OOP concepts with diagrams and examples.",
-      price: "₹29",
-      emoji: "💻",
-    },
-
-    {
-      title: "AI/ML Crash Course",
-      desc: "Short and smart AI/ML revision notes.",
-      price: "₹59",
-      emoji: "🤖",
-    },
-  ];
-
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to right, #e2e8f0, #f8fafc)",
+        background:
+          "linear-gradient(135deg, #020617 0%, #0f172a 45%, #1e1b4b 100%)",
+        overflow: "hidden",
       }}
     >
+      {/* BACKGROUND BLURS */}
+
+      <div
+        style={{
+          position: "fixed",
+          width: "350px",
+          height: "350px",
+          background: "#2563eb",
+          borderRadius: "50%",
+          top: "-120px",
+          left: "-120px",
+          filter: "blur(120px)",
+          opacity: 0.25,
+          zIndex: 0,
+        }}
+      ></div>
+
+      <div
+        style={{
+          position: "fixed",
+          width: "350px",
+          height: "350px",
+          background: "#7c3aed",
+          borderRadius: "50%",
+          bottom: "-120px",
+          right: "-120px",
+          filter: "blur(120px)",
+          opacity: 0.25,
+          zIndex: 0,
+        }}
+      ></div>
+
       {/* NAVBAR */}
 
       <nav
         className="navbar navbar-expand-lg navbar-dark px-4 py-3"
         style={{
-          background: "linear-gradient(to right, #020617, #0f172a)",
-          boxShadow: "0 2px 15px rgba(0,0,0,0.2)",
+          background: "rgba(255,255,255,0.05)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
         }}
       >
         <div className="container-fluid">
-          <h2 className="text-white fw-bold m-0">VIP Engineer 🚀</h2>
+          <h2
+            className="fw-bold m-0"
+            style={{
+              color: "white",
+              letterSpacing: "1px",
+            }}
+          >
+            VIP Engineer 🚀
+          </h2>
 
-          <div>
-            <Link
-              to="/login"
-              className="btn btn-warning fw-bold me-2"
-              style={{
-                borderRadius: "12px",
-              }}
-            >
-              Login
-            </Link>
+          <div className="d-flex gap-2">
+            {!isLoggedIn ? (
+              <>
+                <Link
+                  to="/login"
+                  className="btn fw-bold"
+                  style={{
+                    background: "#facc15",
+                    color: "#020617",
+                    borderRadius: "14px",
+                    padding: "10px 22px",
+                    border: "none",
+                  }}
+                >
+                  Login
+                </Link>
 
-            <Link
-              to="/signup"
-              className="btn btn-primary fw-bold"
-              style={{
-                borderRadius: "12px",
-              }}
-            >
-              Signup
-            </Link>
+                <Link
+                  to="/signup"
+                  className="btn fw-bold"
+                  style={{
+                    background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                    color: "white",
+                    borderRadius: "14px",
+                    padding: "10px 22px",
+                    border: "none",
+                  }}
+                >
+                  Signup
+                </Link>
+              </>
+            ) : (
+              <button
+                className="btn fw-bold"
+                style={{
+                  background: "linear-gradient(to right, #2563eb, #7c3aed)",
+                  color: "white",
+                  borderRadius: "14px",
+                  padding: "10px 22px",
+                  border: "none",
+                }}
+                onClick={() => navigate("/dashboard")}
+              >
+                Dashboard 🚀
+              </button>
+            )}
           </div>
         </div>
       </nav>
 
       {/* HERO */}
 
-      <div className="container text-center py-5">
+      <div
+        className="container text-center"
+        style={{
+          paddingTop: "100px",
+          paddingBottom: "80px",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            background: "rgba(255,255,255,0.08)",
+            color: "#cbd5e1",
+            padding: "10px 22px",
+            borderRadius: "999px",
+            marginBottom: "30px",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            fontWeight: "bold",
+          }}
+        >
+          🚀 India's Smartest Engineering Notes Platform
+        </div>
+
         <h1
           className="fw-bold"
           style={{
-            fontSize: "75px",
-            color: "#020617",
-            marginTop: "40px",
+            fontSize: "90px",
+            color: "white",
+            lineHeight: "100px",
+            letterSpacing: "2px",
           }}
         >
           VIP Engineer
         </h1>
 
         <h2
-          className="fw-bold"
+          className="fw-bold mt-3"
           style={{
-            fontSize: "50px",
-            color: "#1e293b",
-            marginTop: "10px",
+            fontSize: "42px",
+            color: "#cbd5e1",
           }}
         >
           Notes For Real Engineers 😎
         </h2>
 
-        <div
-          style={{
-            fontSize: "90px",
-            marginTop: "10px",
-          }}
-        >
-          📚🚀💻
-        </div>
-
         <p
           className="mx-auto mt-4"
           style={{
-            maxWidth: "900px",
-            fontSize: "24px",
-            color: "#475569",
+            maxWidth: "950px",
+            fontSize: "22px",
+            color: "#94a3b8",
             lineHeight: "42px",
           }}
         >
-          Placement focused notes, handwritten PDFs, viva preparation, DSA
-          tricks and quick revision notes specially designed for engineering
-          students 🔥
+          Premium handwritten PDFs, placement focused DSA notes, viva
+          preparation, quick revision cheatsheets and smart engineering content
+          designed for students 🚀
         </p>
 
-        {/* TAGS */}
+        {/* BUTTONS */}
 
-        {/* SUBJECT FOLDERS */}
+        <div className="mt-5 d-flex justify-content-center gap-3 flex-wrap">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="btn fw-bold"
+            style={{
+              background: "linear-gradient(to right, #2563eb, #7c3aed)",
+              color: "white",
+              borderRadius: "18px",
+              padding: "16px 34px",
+              border: "none",
+              fontSize: "18px",
+              boxShadow: "0 10px 30px rgba(37,99,235,0.35)",
+            }}
+          >
+            Explore Dashboard 🚀
+          </button>
 
-        <div className="mt-5">
-          <h1 className="fw-bold mb-4">Explore Subjects 📂</h1>
+          <button
+            onClick={handlePremiumClick}
+            className="btn fw-bold"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              color: "white",
+              borderRadius: "18px",
+              padding: "16px 34px",
+              border: "1px solid rgba(255,255,255,0.08)",
+              fontSize: "18px",
+              backdropFilter: "blur(10px)",
+            }}
+          >
+            Premium Notes 🔥
+          </button>
+        </div>
 
-          <div className="row g-4 justify-content-center">
-            {[
-              {
-                name: "DSA",
-                emoji: "🔥",
-                color: "#0f172a",
-              },
+        {/* STATS */}
 
-              {
-                name: "DBMS",
-                emoji: "🗂️",
-                color: "#2563eb",
-              },
+        <div className="row mt-5 g-4">
+          <div className="col-md-4">
+            <div
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                borderRadius: "28px",
+                padding: "35px",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <h1
+                className="fw-bold"
+                style={{
+                  color: "#60a5fa",
+                  fontSize: "55px",
+                }}
+              >
+                500+
+              </h1>
 
-              {
-                name: "CN",
-                emoji: "🌐",
-                color: "#16a34a",
-              },
+              <h5
+                style={{
+                  color: "#cbd5e1",
+                }}
+              >
+                Students
+              </h5>
+            </div>
+          </div>
 
-              {
-                name: "OS",
-                emoji: "💻",
-                color: "#dc2626",
-              },
+          <div className="col-md-4">
+            <div
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                borderRadius: "28px",
+                padding: "35px",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <h1
+                className="fw-bold"
+                style={{
+                  color: "#22c55e",
+                  fontSize: "55px",
+                }}
+              >
+                100+
+              </h1>
 
-              {
-                name: "AI/ML",
-                emoji: "🤖",
-                color: "#7c3aed",
-              },
+              <h5
+                style={{
+                  color: "#cbd5e1",
+                }}
+              >
+                Premium PDFs
+              </h5>
+            </div>
+          </div>
 
-              {
-                name: "JAVA",
-                emoji: "☕",
-                color: "#ea580c",
-              },
-            ].map((subject, index) => (
-              <div className="col-md-4 col-lg-3" key={index}>
+          <div className="col-md-4">
+            <div
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                borderRadius: "28px",
+                padding: "35px",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <h1
+                className="fw-bold"
+                style={{
+                  color: "#facc15",
+                  fontSize: "55px",
+                }}
+              >
+                24/7
+              </h1>
+
+              <h5
+                style={{
+                  color: "#cbd5e1",
+                }}
+              >
+                Exam Support
+              </h5>
+            </div>
+          </div>
+        </div>
+
+        {/* SUBJECTS */}
+
+        <div className="mt-5 pt-5">
+          <h1
+            className="fw-bold mb-3"
+            style={{
+              fontSize: "60px",
+              color: "white",
+            }}
+          >
+            Explore Subjects 📂
+          </h1>
+
+          <p
+            style={{
+              color: "#94a3b8",
+              fontSize: "20px",
+            }}
+          >
+            Smart categories created by admin 🚀
+          </p>
+
+          <div className="row g-4 mt-4 justify-content-center">
+            {subjects.map((subject) => (
+              <div className="col-md-4 col-lg-3" key={subject._id}>
                 <div
                   onClick={() => {
                     if (!isLoggedIn) {
@@ -215,312 +389,96 @@ export default function Home() {
                       return;
                     }
 
-                    navigate(`/subject/${subject.name}`);
+                    navigate(`/subject/${subject.title}`);
                   }}
-                  className="card border-0 shadow-lg h-100 text-white"
+                  className="h-100"
                   style={{
-                    borderRadius: "24px",
-                    cursor: "pointer",
                     background: subject.color,
+                    borderRadius: "32px",
+                    padding: "40px 25px",
+                    cursor: "pointer",
                     transition: "0.3s",
-                  }}
-                >
-                  <div className="card-body text-center p-5">
-                    <div
-                      style={{
-                        fontSize: "65px",
-                      }}
-                    >
-                      📂
-                    </div>
-
-                    <h2 className="fw-bold mt-3">{subject.name}</h2>
-
-                    <div
-                      style={{
-                        fontSize: "30px",
-                      }}
-                    >
-                      {subject.emoji}
-                    </div>
-
-                    <p className="mt-3">Open {subject.name} Notes</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA */}
-
-        <div className="mt-5">
-          <Link
-            to="/signup"
-            className="btn btn-primary btn-lg px-5 py-3 fw-bold me-3"
-            style={{
-              borderRadius: "16px",
-            }}
-          >
-            Get Started 🚀
-          </Link>
-
-          <Link
-            to="/login"
-            className="btn btn-dark btn-lg px-5 py-3 fw-bold"
-            style={{
-              borderRadius: "16px",
-            }}
-          >
-            Login
-          </Link>
-        </div>
-
-        {/* STATS */}
-
-        <div className="row mt-5 g-4">
-          <div className="col-md-4">
-            <div
-              className="card border-0 shadow-lg p-4"
-              style={{
-                borderRadius: "20px",
-              }}
-            >
-              <h1 className="fw-bold text-primary">500+</h1>
-
-              <h5>Students</h5>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="card border-0 shadow-lg p-4"
-              style={{
-                borderRadius: "20px",
-              }}
-            >
-              <h1 className="fw-bold text-success">100+</h1>
-
-              <h5>Premium PDFs</h5>
-            </div>
-          </div>
-
-          <div className="col-md-4">
-            <div
-              className="card border-0 shadow-lg p-4"
-              style={{
-                borderRadius: "20px",
-              }}
-            >
-              <h1 className="fw-bold text-danger">24/7</h1>
-
-              <h5>Exam Support</h5>
-            </div>
-          </div>
-        </div>
-
-        {/* FREE NOTES */}
-
-        <div className="mt-5">
-          <h1 className="fw-bold">Free Notes 📖</h1>
-
-          <p className="text-secondary fs-5">
-            Free sample notes for every student
-          </p>
-
-          <div className="row mt-4 g-4">
-            {freeNotes.map((note, index) => (
-              <div className="col-md-4" key={index}>
-                <div
-                  className="card border-0 shadow-lg h-100"
-                  style={{
-                    borderRadius: "22px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "10px",
-                      background: "linear-gradient(to right, #22c55e, #16a34a)",
-                    }}
-                  ></div>
-
-                  <div className="card-body p-4">
-                    <div style={{ fontSize: "50px" }}>{note.emoji}</div>
-
-                    <h3 className="fw-bold mt-3">{note.title}</h3>
-
-                    <p className="text-secondary">{note.desc}</p>
-
-                    <h4 className="fw-bold text-success">{note.price}</h4>
-
-                    <button
-                      className="btn btn-success w-100 fw-bold mt-3"
-                      style={{
-                        borderRadius: "14px",
-                        padding: "12px",
-                      }}
-                    >
-                      View Free 🚀
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* PREMIUM NOTES */}
-
-        <div className="mt-5">
-          <h1 className="fw-bold">Premium Notes 🔥</h1>
-
-          <p className="text-secondary fs-5">
-            High quality premium handwritten notes
-          </p>
-
-          <div className="row mt-4 g-4">
-            {premiumNotes.map((note, index) => (
-              <div className="col-md-4" key={index}>
-                <div
-                  className="card border-0 shadow-lg h-100"
-                  style={{
-                    borderRadius: "22px",
-                    overflow: "hidden",
+                    color: "white",
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
                     position: "relative",
+                    overflow: "hidden",
                   }}
                 >
                   <div
-                    style={{
-                      height: "10px",
-                      background: "linear-gradient(to right, #2563eb, #7c3aed)",
-                    }}
-                  ></div>
-
-                  <span
-                    className="badge bg-warning text-dark"
                     style={{
                       position: "absolute",
-                      top: "18px",
-                      right: "18px",
-                      padding: "10px",
-                      fontSize: "14px",
+                      width: "120px",
+                      height: "120px",
+                      background: "rgba(255,255,255,0.1)",
+                      borderRadius: "50%",
+                      top: "-30px",
+                      right: "-30px",
+                    }}
+                  ></div>
+
+                  <div
+                    style={{
+                      fontSize: "75px",
                     }}
                   >
-                    PREMIUM 🔒
-                  </span>
-
-                  <div className="card-body p-4">
-                    <div
-                      style={{
-                        fontSize: "50px",
-                        filter: "blur(1px)",
-                      }}
-                    >
-                      {note.emoji}
-                    </div>
-
-                    <h3 className="fw-bold mt-3">{note.title}</h3>
-
-                    <p className="text-secondary">{note.desc}</p>
-
-                    <h4
-                      className="fw-bold"
-                      style={{
-                        color: "#2563eb",
-                      }}
-                    >
-                      {note.price}
-                    </h4>
-
-                    <button
-                      onClick={handlePremiumClick}
-                      className="btn btn-dark w-100 fw-bold mt-3"
-                      style={{
-                        borderRadius: "14px",
-                        padding: "12px",
-                      }}
-                    >
-                      View Premium 🔒
-                    </button>
+                    {subject.emoji}
                   </div>
+
+                  <h2 className="fw-bold mt-4">{subject.title}</h2>
+
+                  <p
+                    className="mt-3"
+                    style={{
+                      color: "rgba(255,255,255,0.85)",
+                    }}
+                  >
+                    Open premium notes and study materials 🚀
+                  </p>
+
+                  <button
+                    className="btn fw-bold mt-4"
+                    style={{
+                      background: "rgba(255,255,255,0.15)",
+                      color: "white",
+                      borderRadius: "14px",
+                      border: "1px solid rgba(255,255,255,0.2)",
+                      padding: "12px 22px",
+                    }}
+                  >
+                    Explore →
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* WHY VIP ENGINEER */}
-
-        <div className="mt-5">
-          <h1 className="fw-bold">Why VIP Engineer? 🚀</h1>
-
-          <div className="row mt-4 g-4">
-            <div className="col-md-4">
-              <div
-                className="card border-0 shadow-lg p-4 h-100"
-                style={{
-                  borderRadius: "20px",
-                }}
-              >
-                <div style={{ fontSize: "60px" }}>📖</div>
-
-                <h3 className="fw-bold mt-3">Handwritten Notes</h3>
-
-                <p className="text-secondary">
-                  Easy language handwritten notes for quick understanding.
-                </p>
-              </div>
+          {subjects.length === 0 && (
+            <div
+              className="mt-5"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                borderRadius: "30px",
+                padding: "50px",
+                color: "#cbd5e1",
+              }}
+            >
+              <h2>No Subjects Added Yet 😔</h2>
             </div>
-
-            <div className="col-md-4">
-              <div
-                className="card border-0 shadow-lg p-4 h-100"
-                style={{
-                  borderRadius: "20px",
-                }}
-              >
-                <div style={{ fontSize: "60px" }}>⚡</div>
-
-                <h3 className="fw-bold mt-3">Quick Revision</h3>
-
-                <p className="text-secondary">
-                  Last minute preparation PDFs and revision notes.
-                </p>
-              </div>
-            </div>
-
-            <div className="col-md-4">
-              <div
-                className="card border-0 shadow-lg p-4 h-100"
-                style={{
-                  borderRadius: "20px",
-                }}
-              >
-                <div style={{ fontSize: "60px" }}>💻</div>
-
-                <h3 className="fw-bold mt-3">Placement Focused</h3>
-
-                <p className="text-secondary">
-                  DSA, aptitude and interview focused study material.
-                </p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* FOOTER */}
 
         <footer
-          className="text-center text-white py-4 mt-5"
+          className="mt-5"
           style={{
-            background: "linear-gradient(to right, #020617, #0f172a)",
-            borderRadius: "20px",
+            paddingTop: "80px",
+            color: "#94a3b8",
           }}
         >
-          <h5 className="fw-bold">VIP Engineer © 2026</h5>
+          <h4 className="fw-bold text-white">VIP Engineer © 2026</h4>
 
-          <p className="m-0 text-light">Built For Engineers ❤️</p>
+          <p>Built For Engineers ❤️</p>
         </footer>
       </div>
     </div>

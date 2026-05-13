@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Routes, Route } from "react-router-dom";
-
+import ManageExploreSubjects from "./pages/ManageExploreSubjects";
 import Payment from "./pages/Payment";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -35,6 +35,11 @@ export default function App() {
       <Route path="/profile" element={<Profile />} />
 
       <Route path="/subject/:name" element={<SubjectNotes />} />
+
+      <Route
+        path="/manage-explore-subjects"
+        element={<ManageExploreSubjects />}
+      />
     </Routes>
   );
 }
