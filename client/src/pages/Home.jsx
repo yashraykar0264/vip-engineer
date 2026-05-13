@@ -30,15 +30,7 @@ export default function Home() {
   // PREMIUM CLICK
 
   const handlePremiumClick = () => {
-    if (!isLoggedIn) {
-      navigate("/login", {
-        state: {
-          message: "Please login/signup first 🔒",
-        },
-      });
-
-      return;
-    }
+    navigate(`/home-subject/${subject.name}`);
 
     navigate("/dashboard");
   };
