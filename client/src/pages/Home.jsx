@@ -80,6 +80,8 @@ export default function Home() {
               borderRadius: "14px",
               padding: "10px 22px",
               border: "none",
+              width: "100%",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
             }}
             onClick={() => navigate("/signup")}
           >
