@@ -107,7 +107,7 @@ export default function ManageHomeNotes() {
 
   const addNote = async () => {
     try {
-      if (!title || !description || !pdf) {
+      if (!title || !description || (type === "free" && !pdf)) {
         return alert("Fill All Fields");
       }
 
@@ -378,12 +378,14 @@ export default function ManageHomeNotes() {
                 <option value="premium">🔒 Premium Preview</option>
               </select>
 
-              <input
-                type="file"
-                className="form-control p-3 mb-4"
-                accept=".pdf"
-                onChange={(e) => setPdf(e.target.files[0])}
-              />
+              {type === "free" && (
+                <input
+                  type="file"
+                  className="form-control p-3 mb-4"
+                  accept=".pdf"
+                  onChange={(e) => setPdf(e.target.files[0])}
+                />
+              )}
 
               <button
                 className="btn btn-primary w-100 fw-bold"

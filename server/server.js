@@ -757,12 +757,21 @@ app.post(
     try {
       const { title, description, folder, type } = req.body;
 
+      // FREE NOTE => PDF REQUIRED
+
+      if (type === "free" && !req.file) {
+        return res.status(400).json({
+          message: "PDF Required For Free Notes",
+        });
+      }
+
       const note = new HomeNote({
         title,
         description,
         folder,
         type,
-        pdf: `/uploads/${req.file.filename}`,
+
+        pdf: req.file ? `/uploads/${req.file.filename}` : "",
       });
 
       await note.save();

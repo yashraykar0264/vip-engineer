@@ -22,9 +22,11 @@ const homeNoteSchema = new mongoose.Schema({
     default: "free",
   },
 
+  // OPTIONAL PDF
+
   pdf: {
     type: String,
-    required: true,
+    default: "",
   },
 
   createdAt: {
