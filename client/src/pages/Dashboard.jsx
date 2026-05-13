@@ -232,13 +232,21 @@ export default function Dashboard() {
                       💳 Payment Requests
                     </button>
                   </li>
+                  <li>
+                    <button
+                      className="dropdown-item fw-bold py-3 rounded"
+                      onClick={() => navigate("/add-home-folder")}
+                    >
+                      📂 Add Home Folder
+                    </button>
+                  </li>
 
                   <li>
                     <button
                       className="dropdown-item fw-bold py-3 rounded"
-                      onClick={() => navigate("/manage-explore-subjects")}
+                      onClick={() => navigate("/add-home-files")}
                     >
-                      🌟 Home Subjects
+                      📚 Add Home Files
                     </button>
                   </li>
                 </ul>

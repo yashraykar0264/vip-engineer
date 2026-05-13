@@ -630,206 +630,206 @@ app.delete(
   },
 );
 
-// ================================
-// EXPLORE SUBJECTS
-// ================================
+// // ================================
+// // EXPLORE SUBJECTS
+// // ================================
 
-// GET SUBJECTS
+// // GET SUBJECTS
 
-app.get("/explore-subjects", async (req, res) => {
-  try {
-    const subjects = await ExploreSubject.find();
+// app.get("/explore-subjects", async (req, res) => {
+//   try {
+//     const subjects = await ExploreSubject.find();
 
-    res.json(subjects);
-  } catch (error) {
-    console.log(error);
+//     res.json(subjects);
+//   } catch (error) {
+//     console.log(error);
 
-    res.status(500).json({
-      message: "Failed To Fetch Subjects",
-    });
-  }
-});
+//     res.status(500).json({
+//       message: "Failed To Fetch Subjects",
+//     });
+//   }
+// });
 
-// CREATE SUBJECT
+// // CREATE SUBJECT
 
-app.post(
-  "/create-explore-subject",
+// app.post(
+//   "/create-explore-subject",
 
-  authMiddleware,
+//   authMiddleware,
 
-  adminMiddleware,
+//   adminMiddleware,
 
-  async (req, res) => {
-    try {
-      const { title, emoji, color } = req.body;
+//   async (req, res) => {
+//     try {
+//       const { title, emoji, color } = req.body;
 
-      const newSubject = new ExploreSubject({
-        title,
-        emoji,
-        color,
-      });
+//       const newSubject = new ExploreSubject({
+//         title,
+//         emoji,
+//         color,
+//       });
 
-      await newSubject.save();
+//       await newSubject.save();
 
-      res.json({
-        message: "Subject Added Successfully",
-      });
-    } catch (error) {
-      console.log(error);
+//       res.json({
+//         message: "Subject Added Successfully",
+//       });
+//     } catch (error) {
+//       console.log(error);
 
-      res.status(500).json({
-        message: "Failed To Add Subject",
-      });
-    }
-  },
-);
+//       res.status(500).json({
+//         message: "Failed To Add Subject",
+//       });
+//     }
+//   },
+// );
 
-// DELETE SUBJECT
+// // DELETE SUBJECT
 
-app.delete(
-  "/delete-explore-subject/:id",
+// app.delete(
+//   "/delete-explore-subject/:id",
 
-  authMiddleware,
+//   authMiddleware,
 
-  adminMiddleware,
+//   adminMiddleware,
 
-  async (req, res) => {
-    try {
-      await ExploreSubject.findByIdAndDelete(req.params.id);
+//   async (req, res) => {
+//     try {
+//       await ExploreSubject.findByIdAndDelete(req.params.id);
 
-      res.json({
-        message: "Subject Deleted Successfully",
-      });
-    } catch (error) {
-      console.log(error);
+//       res.json({
+//         message: "Subject Deleted Successfully",
+//       });
+//     } catch (error) {
+//       console.log(error);
 
-      res.status(500).json({
-        message: "Delete Failed",
-      });
-    }
-  },
-);
+//       res.status(500).json({
+//         message: "Delete Failed",
+//       });
+//     }
+//   },
+// );
 
-// UPDATE SUBJECT
+// // UPDATE SUBJECT
 
-app.put(
-  "/update-explore-subject/:id",
+// app.put(
+//   "/update-explore-subject/:id",
 
-  authMiddleware,
+//   authMiddleware,
 
-  adminMiddleware,
+//   adminMiddleware,
 
-  async (req, res) => {
-    try {
-      const updated = await ExploreSubject.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
-          new: true,
-        },
-      );
+//   async (req, res) => {
+//     try {
+//       const updated = await ExploreSubject.findByIdAndUpdate(
+//         req.params.id,
+//         req.body,
+//         {
+//           new: true,
+//         },
+//       );
 
-      res.json(updated);
-    } catch (error) {
-      console.log(error);
+//       res.json(updated);
+//     } catch (error) {
+//       console.log(error);
 
-      res.status(500).json({
-        message: "Update Failed",
-      });
-    }
-  },
-);
+//       res.status(500).json({
+//         message: "Update Failed",
+//       });
+//     }
+//   },
+// );
 
-// ================================
+// // ================================
 
-// ADD HOME NOTE
+// // ADD HOME NOTE
 
-app.post(
-  "/add-home-note",
+// app.post(
+//   "/add-home-note",
 
-  authMiddleware,
+//   authMiddleware,
 
-  adminMiddleware,
+//   adminMiddleware,
 
-  upload.single("pdf"),
+//   upload.single("pdf"),
 
-  async (req, res) => {
-    try {
-      const { title, description, folder, type } = req.body;
+//   async (req, res) => {
+//     try {
+//       const { title, description, folder, type } = req.body;
 
-      // FREE NOTE => PDF REQUIRED
+//       // FREE NOTE => PDF REQUIRED
 
-      if (type === "free" && !req.file) {
-        return res.status(400).json({
-          message: "PDF Required For Free Notes",
-        });
-      }
+//       if (type === "free" && !req.file) {
+//         return res.status(400).json({
+//           message: "PDF Required For Free Notes",
+//         });
+//       }
 
-      const note = new HomeNote({
-        title,
-        description,
-        folder,
-        type,
+//       const note = new HomeNote({
+//         title,
+//         description,
+//         folder,
+//         type,
 
-        pdf: req.file ? `/uploads/${req.file.filename}` : "",
-      });
+//         pdf: req.file ? `/uploads/${req.file.filename}` : "",
+//       });
 
-      await note.save();
+//       await note.save();
 
-      res.json({
-        message: "Home Note Added 🚀",
-      });
-    } catch (error) {
-      console.log(error);
+//       res.json({
+//         message: "Home Note Added 🚀",
+//       });
+//     } catch (error) {
+//       console.log(error);
 
-      res.status(500).json({
-        message: "Failed",
-      });
-    }
-  },
-);
+//       res.status(500).json({
+//         message: "Failed",
+//       });
+//     }
+//   },
+// );
 
-// GET HOME NOTES
+// // GET HOME NOTES
 
-app.get("/home-notes", async (req, res) => {
-  try {
-    const notes = await HomeNote.find();
+// app.get("/home-notes", async (req, res) => {
+//   try {
+//     const notes = await HomeNote.find();
 
-    res.json(notes);
-  } catch (error) {
-    console.log(error);
+//     res.json(notes);
+//   } catch (error) {
+//     console.log(error);
 
-    res.status(500).json({
-      message: "Failed",
-    });
-  }
-});
+//     res.status(500).json({
+//       message: "Failed",
+//     });
+//   }
+// });
 
-// DELETE HOME NOTE
+// // DELETE HOME NOTE
 
-app.delete(
-  "/delete-home-note/:id",
+// app.delete(
+//   "/delete-home-note/:id",
 
-  authMiddleware,
+//   authMiddleware,
 
-  adminMiddleware,
+//   adminMiddleware,
 
-  async (req, res) => {
-    try {
-      await HomeNote.findByIdAndDelete(req.params.id);
+//   async (req, res) => {
+//     try {
+//       await HomeNote.findByIdAndDelete(req.params.id);
 
-      res.json({
-        message: "Deleted Successfully",
-      });
-    } catch (error) {
-      console.log(error);
+//       res.json({
+//         message: "Deleted Successfully",
+//       });
+//     } catch (error) {
+//       console.log(error);
 
-      res.status(500).json({
-        message: "Delete Failed",
-      });
-    }
-  },
-);
+//       res.status(500).json({
+//         message: "Delete Failed",
+//       });
+//     }
+//   },
+// );
 
 // ================================
 // SERVER

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Routes, Route } from "react-router-dom";
-import ManageExploreSubjects from "./pages/ManageExploreSubjects";
+
 import Payment from "./pages/Payment";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -12,7 +12,9 @@ import Dashboard from "./pages/Dashboard";
 import AdminRequests from "./pages/AdminRequests";
 import AddNote from "./pages/AddNote";
 import SubjectNotes from "./pages/SubjectNotes";
+import AddHomeFolder from "./pages/AddHomeFolder";
 
+import AddHomeFiles from "./pages/AddHomeFiles";
 export default function App() {
   return (
     <Routes>
@@ -35,11 +37,11 @@ export default function App() {
       <Route path="/profile" element={<Profile />} />
 
       <Route path="/subject/:name" element={<SubjectNotes />} />
+      <Route path="/add-home-folder" element={<AddHomeFolder />} />
 
-      <Route
-        path="/manage-explore-subjects"
-        element={<ManageExploreSubjects />}
-      />
+      <Route path="/add-home-files" element={<AddHomeFiles />} />
+
+     
     </Routes>
   );
 }
