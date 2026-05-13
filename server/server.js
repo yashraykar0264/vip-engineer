@@ -8,6 +8,10 @@ const fs = require("fs");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const path = require("path");
+const fs = require("fs");
 
 require("dotenv").config();
 
@@ -33,6 +37,16 @@ const app = express();
 connectDB();
 
 // ================================
+// CLOUDINARY
+// ================================
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// ================================
 // MIDDLEWARE
 // ================================
 // SECURITY HEADERS
@@ -42,7 +56,6 @@ app.use(helmet());
 // MONGO SANITIZE
 
 app.use(mongoSanitize());
-
 
 // RATE LIMITER
 
@@ -67,19 +80,17 @@ app.use(express.json());
 // STATIC FOLDERS
 // ================================
 
-app.use("/screenshots", express.static("screenshots"));
-
 // ================================
 // PDF STORAGE
 // ================================
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+const pdfStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "vip-engineer/pdfs",
+    resource_type: "raw",
+    format: async () => "pdf",
+    public_id: (req, file) => Date.now() + "-pdf",
   },
 });
 
@@ -87,15 +98,12 @@ const storage = multer.diskStorage({
 // SCREENSHOT STORAGE
 // ================================
 
-const screenshotStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "screenshots/");
-  },
-
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname).toLowerCase();
-
-    cb(null, Date.now() + ext);
+const screenshotStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "vip-engineer/screenshots",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    public_id: (req, file) => Date.now() + "-screenshot",
   },
 });
 
@@ -126,7 +134,7 @@ const screenshotFileFilter = (req, file, cb) => {
 // ================================
 
 const upload = multer({
-  storage,
+  storage: pdfStorage,
   fileFilter,
   limits: {
     fileSize: 10 * 1024 * 1024,
@@ -273,7 +281,7 @@ app.post(
         description,
         price,
         folder,
-        pdf: `/uploads/${req.file.filename}`,
+        pdf: req.file.path,
       });
 
       await newNote.save();
@@ -491,7 +499,7 @@ app.post(
         userId: req.user.id,
         noteId,
         transactionId,
-        screenshot: `/screenshots/${req.file.filename}`,
+        screenshot: req.file.path,
         paymentStatus: "pending",
       });
 
@@ -619,17 +627,7 @@ app.get(
         });
       }
 
-      const cleanPdf = purchase.noteId.pdf.replace("/uploads/", "");
-
-      const pdfPath = path.join(__dirname, "uploads", cleanPdf);
-
-      if (!fs.existsSync(pdfPath)) {
-        return res.status(404).json({
-          message: "PDF Not Found",
-        });
-      }
-
-      res.sendFile(pdfPath);
+      return res.redirect(purchase.noteId.pdf);
     } catch (error) {
       console.log(error);
 
@@ -655,25 +653,13 @@ app.get(
         });
       }
 
-      // ONLY FREE NOTES
-
       if (note.price > 0) {
         return res.status(403).json({
           message: "Premium Note",
         });
       }
 
-      const cleanPdf = note.pdf.replace("/uploads/", "");
-
-      const pdfPath = path.join(__dirname, "uploads", cleanPdf);
-
-      if (!fs.existsSync(pdfPath)) {
-        return res.status(404).json({
-          message: "PDF Not Found",
-        });
-      }
-
-      res.sendFile(pdfPath);
+      return res.redirect(note.pdf);
     } catch (error) {
       console.log(error);
 
@@ -832,7 +818,7 @@ app.post(
         description,
         folder,
         type,
-        pdf: req.file ? `/uploads/${req.file.filename}` : "",
+        pdf: req.file ? req.file.path : "",
       });
 
       await note.save();
