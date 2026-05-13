@@ -3,15 +3,11 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const path = require("path");
-const fs = require("fs");
 
 require("dotenv").config();
 
@@ -88,8 +84,8 @@ const pdfStorage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "vip-engineer/pdfs",
-    resource_type: "raw",
-    format: async () => "pdf",
+    resource_type: "auto",
+
     public_id: (req, file) => Date.now() + "-pdf",
   },
 });
@@ -436,16 +432,6 @@ app.delete(
         noteId,
       });
 
-      if (note.pdf) {
-        const cleanPdf = note.pdf.replace("/uploads/", "");
-
-        const pdfPath = path.join(__dirname, "uploads", cleanPdf);
-
-        if (fs.existsSync(pdfPath)) {
-          fs.unlinkSync(pdfPath);
-        }
-      }
-
       await Note.findByIdAndDelete(noteId);
 
       res.json({
@@ -761,18 +747,6 @@ app.delete(
         folder: folder.name,
       });
 
-      for (const note of notes) {
-        if (note.pdf) {
-          const cleanPdf = note.pdf.replace("/uploads/", "");
-
-          const pdfPath = path.join(__dirname, "uploads", cleanPdf);
-
-          if (fs.existsSync(pdfPath)) {
-            fs.unlinkSync(pdfPath);
-          }
-        }
-      }
-
       await HomeNote.deleteMany({
         folder: folder.name,
       });
@@ -873,16 +847,6 @@ app.delete(
         return res.status(404).json({
           message: "Home Note Not Found",
         });
-      }
-
-      if (note.pdf) {
-        const cleanPdf = note.pdf.replace("/uploads/", "");
-
-        const pdfPath = path.join(__dirname, "uploads", cleanPdf);
-
-        if (fs.existsSync(pdfPath)) {
-          fs.unlinkSync(pdfPath);
-        }
       }
 
       await HomeNote.findByIdAndDelete(req.params.id);
