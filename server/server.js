@@ -5,7 +5,10 @@ const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -32,6 +35,27 @@ connectDB();
 // ================================
 // MIDDLEWARE
 // ================================
+// SECURITY HEADERS
+
+app.use(helmet());
+
+// MONGO SANITIZE
+
+app.use(mongoSanitize());
+
+// XSS PROTECTION
+
+app.use(xss());
+
+// RATE LIMITER
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  message: "Too Many Requests, Try Again Later 🚫",
+});
+
+app.use(limiter);
 
 app.use(
   cors({
@@ -115,6 +139,9 @@ const upload = multer({
 const screenshotUpload = multer({
   storage: screenshotStorage,
   fileFilter: screenshotFileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
 });
 
 // ================================
