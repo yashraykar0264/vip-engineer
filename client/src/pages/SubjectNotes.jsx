@@ -426,28 +426,8 @@ export default function SubjectNotes() {
                         padding: "14px",
                         fontSize: "16px",
                       }}
-                      onClick={async () => {
-                        try {
-                          const response = await fetch(
-                            `https://vip-engineer.onrender.com/notes/free/${note._id}`,
-                          );
-
-                          if (!response.ok) {
-                            toast.error("Failed To Open PDF ❌");
-
-                            return;
-                          }
-
-                          const blob = await response.blob();
-
-                          const fileURL = window.URL.createObjectURL(blob);
-
-                          window.open(fileURL);
-                        } catch (error) {
-                          console.log(error);
-
-                          toast.error("Error Opening PDF ❌");
-                        }
+                      onClick={() => {
+                        window.open(note.pdf, "_blank");
                       }}
                     >
                       Open PDF 🚀
@@ -587,35 +567,8 @@ export default function SubjectNotes() {
                           background:
                             "linear-gradient(to right,#16a34a,#22c55e)",
                         }}
-                        onClick={async () => {
-                          try {
-                            const token = localStorage.getItem("token");
-
-                            const response = await fetch(
-                              `https://vip-engineer.onrender.com/notes/view/${note._id}`,
-                              {
-                                headers: {
-                                  Authorization: `Bearer ${token}`,
-                                },
-                              },
-                            );
-
-                            if (!response.ok) {
-                              toast.error("Access Denied ❌");
-
-                              return;
-                            }
-
-                            const blob = await response.blob();
-
-                            const fileURL = window.URL.createObjectURL(blob);
-
-                            window.open(fileURL);
-                          } catch (error) {
-                            console.log(error);
-
-                            toast.error("Failed To Open PDF ❌");
-                          }
+                        onClick={() => {
+                          window.open(note.pdf, "_blank");
                         }}
                       >
                         Open PDF 🚀
