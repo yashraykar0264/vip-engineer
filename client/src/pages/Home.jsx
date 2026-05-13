@@ -40,12 +40,12 @@ export default function Home() {
       <nav
         className="d-flex justify-content-between align-items-center px-3 px-md-5 py-3"
         style={{
-          background: "rgba(255,255,255,0.05)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
           position: "sticky",
           top: 0,
-          zIndex: 1000,
+          zIndex: 9999,
+          background: "rgba(15,23,42,0.85)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
         }}
       >
         <h2
@@ -166,6 +166,16 @@ export default function Home() {
                 padding: "16px 34px",
                 border: "1px solid rgba(255,255,255,0.08)",
                 fontSize: "18px",
+              }}
+              onClick={() => {
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                  navigate("/login");
+                  return;
+                }
+
+                navigate("/dashboard");
               }}
             >
               Premium Notes 🔥
