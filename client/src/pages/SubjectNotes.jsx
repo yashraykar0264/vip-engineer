@@ -419,19 +419,39 @@ export default function SubjectNotes() {
 
                     <span className="badge bg-success mb-4">FREE ACCESS</span>
 
-                    <a
-                      href={`https://vip-engineer.onrender.com${note.pdf}`}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
                       className="btn btn-success w-100 fw-bold"
                       style={{
                         borderRadius: "16px",
                         padding: "14px",
                         fontSize: "16px",
                       }}
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(
+                            `https://vip-engineer.onrender.com/notes/free/${note._id}`,
+                          );
+
+                          if (!response.ok) {
+                            alert("Failed To Open PDF");
+
+                            return;
+                          }
+
+                          const blob = await response.blob();
+
+                          const fileURL = window.URL.createObjectURL(blob);
+
+                          window.open(fileURL);
+                        } catch (error) {
+                          console.log(error);
+
+                          alert("Error Opening PDF");
+                        }
+                      }}
                     >
                       Open PDF 🚀
-                    </a>
+                    </button>
 
                     {role === "admin" && (
                       <button

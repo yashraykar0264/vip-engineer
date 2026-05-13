@@ -46,8 +46,6 @@ app.use(express.json());
 // STATIC FOLDERS
 // ================================
 
-app.use("/uploads", express.static("uploads"));
-
 app.use("/screenshots", express.static("screenshots"));
 
 // ================================
@@ -109,6 +107,9 @@ const screenshotFileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
 });
 
 const screenshotUpload = multer({
@@ -200,7 +201,7 @@ app.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
 
       {
-        expiresIn: "30d",
+        expiresIn: "7d",
       },
     );
 
@@ -595,6 +596,50 @@ app.get(
       }
 
       const cleanPdf = purchase.noteId.pdf.replace("/uploads/", "");
+
+      const pdfPath = path.join(__dirname, "uploads", cleanPdf);
+
+      if (!fs.existsSync(pdfPath)) {
+        return res.status(404).json({
+          message: "PDF Not Found",
+        });
+      }
+
+      res.sendFile(pdfPath);
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Server Error",
+      });
+    }
+  },
+);
+
+// FREE PDF VIEW
+
+app.get(
+  "/notes/free/:id",
+
+  async (req, res) => {
+    try {
+      const note = await Note.findById(req.params.id);
+
+      if (!note) {
+        return res.status(404).json({
+          message: "Note Not Found",
+        });
+      }
+
+      // ONLY FREE NOTES
+
+      if (note.price > 0) {
+        return res.status(403).json({
+          message: "Premium Note",
+        });
+      }
+
+      const cleanPdf = note.pdf.replace("/uploads/", "");
 
       const pdfPath = path.join(__dirname, "uploads", cleanPdf);
 
