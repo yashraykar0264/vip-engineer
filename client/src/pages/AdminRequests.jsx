@@ -38,6 +38,8 @@ export default function AdminRequests() {
       setRequests(response.data);
     } catch (error) {
       console.log(error);
+
+      toast.error("Failed To Fetch Requests ❌");
     }
   };
 
@@ -73,18 +75,6 @@ export default function AdminRequests() {
     localStorage.clear();
 
     navigate("/");
-  };
-
-  // FIX SCREENSHOT URL
-
-  const getScreenshotUrl = (screenshot) => {
-    if (!screenshot) return "";
-
-    if (screenshot.startsWith("http")) {
-      return screenshot;
-    }
-
-    return `https://vip-engineer.onrender.com${screenshot}`;
   };
 
   return (
@@ -194,7 +184,7 @@ export default function AdminRequests() {
                       <h6 className="fw-bold mb-2">Payment Screenshot 📸</h6>
 
                       <img
-                        src={getScreenshotUrl(req.screenshot)}
+                        src={req.screenshot}
                         alt="payment"
                         onError={(e) => {
                           e.target.style.display = "none";
