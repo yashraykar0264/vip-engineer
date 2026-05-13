@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import API from "../services/api";
 
@@ -12,6 +12,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   // LOGIN FUNCTION
 
@@ -117,6 +119,18 @@ export default function Login() {
             Login to continue your journey
           </p>
         </div>
+
+        {location.state?.message && (
+          <div className="alert alert-warning alert-dismissible fade show" role="alert">
+            {location.state.message}
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
 
         {/* FORM */}
 
