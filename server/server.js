@@ -82,12 +82,18 @@ app.use(express.json());
 
 const pdfStorage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "vip-engineer/pdfs",
-    resource_type: "auto",
 
-    public_id: (req, file) => Date.now() + "-pdf",
-  },
+  params: async (req, file) => ({
+    folder: "vip-engineer/pdfs",
+
+    resource_type: "raw",
+
+    type: "upload",
+
+    access_mode: "public",
+
+    public_id: Date.now() + "-pdf",
+  }),
 });
 
 // ================================
