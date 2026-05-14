@@ -343,19 +343,24 @@ export default function HomeSubjectNotes() {
 
                     <span className="badge bg-success mb-4">FREE ACCESS</span>
 
-                    <a
-                      href={note.pdf}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
                       className="btn btn-success w-100 fw-bold"
                       style={{
                         borderRadius: "16px",
                         padding: "14px",
                         fontSize: "16px",
                       }}
+                      onClick={() => {
+                        window.open(
+                          `/#/pdf-viewer?url=${encodeURIComponent(
+                            `https://vip-engineer.onrender.com/notes/free/${note._id}`,
+                          )}`,
+                          "_blank",
+                        );
+                      }}
                     >
                       Open PDF 🚀
-                    </a>
+                    </button>
                   </div>
                 </div>
               ))}

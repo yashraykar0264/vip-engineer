@@ -427,7 +427,12 @@ export default function SubjectNotes() {
                         fontSize: "16px",
                       }}
                       onClick={() => {
-                        window.open(note.pdf, "_blank")
+                        window.open(
+                          `/#/pdf-viewer?url=${encodeURIComponent(
+                            `https://vip-engineer.onrender.com/notes/free/${note._id}`,
+                          )}`,
+                          "_blank",
+                        );
                       }}
                     >
                       Open PDF 🚀
@@ -568,7 +573,14 @@ export default function SubjectNotes() {
                             "linear-gradient(to right,#16a34a,#22c55e)",
                         }}
                         onClick={() => {
-                          window.open(note.pdf, "_blank");
+                          const token = localStorage.getItem("token");
+
+                          window.open(
+                            `/#/pdf-viewer?url=${encodeURIComponent(
+                              `https://vip-engineer.onrender.com/notes/view/${note._id}?token=${token}`,
+                            )}`,
+                            "_blank",
+                          );
                         }}
                       >
                         Open PDF 🚀
