@@ -427,10 +427,7 @@ export default function SubjectNotes() {
                         fontSize: "16px",
                       }}
                       onClick={() => {
-                        window.open(
-                          `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(note.pdf)}`,
-                          "_blank",
-                        );
+                        window.open(note.pdf, "_blank")
                       }}
                     >
                       Open PDF 🚀
@@ -571,10 +568,7 @@ export default function SubjectNotes() {
                             "linear-gradient(to right,#16a34a,#22c55e)",
                         }}
                         onClick={() => {
-                          window.open(
-                            `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(note.pdf)}`,
-                            "_blank",
-                          );
+                          window.open(note.pdf, "_blank");
                         }}
                       >
                         Open PDF 🚀

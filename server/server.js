@@ -90,9 +90,9 @@ const pdfStorage = new CloudinaryStorage({
 
     type: "upload",
 
-    access_mode: "public",
-
     public_id: Date.now() + "-pdf",
+
+    flags: "attachment:false",
   }),
 });
 
