@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
+const axios = require("axios");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -598,69 +599,81 @@ app.get(
 
 // SECURE PDF VIEW
 
-app.get(
-  "/notes/view/:id",
+app.get("/notes/view/:id", authMiddleware, async (req, res) => {
+  try {
+    const noteId = req.params.id;
 
-  authMiddleware,
+    const purchase = await Purchase.findOne({
+      userId: req.user.id,
+      noteId,
+      paymentStatus: "approved",
+    }).populate("noteId");
 
-  async (req, res) => {
-    try {
-      const noteId = req.params.id;
-
-      const purchase = await Purchase.findOne({
-        userId: req.user.id,
-        noteId,
-        paymentStatus: "approved",
-      }).populate("noteId");
-
-      if (!purchase) {
-        return res.status(403).json({
-          message: "Access Denied",
-        });
-      }
-
-      return res.redirect(purchase.noteId.pdf);
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        message: "Server Error",
+    if (!purchase) {
+      return res.status(403).json({
+        message: "Access Denied",
       });
     }
-  },
-);
+
+    const response = await axios.get(purchase.noteId.pdf, {
+      responseType: "stream",
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${Date.now()}.pdf"`,
+    );
+
+    response.data.pipe(res);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
 
 // FREE PDF VIEW
 
-app.get(
-  "/notes/free/:id",
+app.get("/notes/free/:id", async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
 
-  async (req, res) => {
-    try {
-      const note = await Note.findById(req.params.id);
-
-      if (!note) {
-        return res.status(404).json({
-          message: "Note Not Found",
-        });
-      }
-
-      if (note.price > 0) {
-        return res.status(403).json({
-          message: "Premium Note",
-        });
-      }
-
-      return res.redirect(note.pdf);
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        message: "Server Error",
+    if (!note) {
+      return res.status(404).json({
+        message: "Note Not Found",
       });
     }
-  },
-);
+
+    if (note.price > 0) {
+      return res.status(403).json({
+        message: "Premium Note",
+      });
+    }
+
+    const response = await axios.get(note.pdf, {
+      responseType: "stream",
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${Date.now()}.pdf"`,
+    );
+
+    response.data.pipe(res);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
 
 // ================================
 // HOME MARKETPLACE
