@@ -48,7 +48,12 @@ cloudinary.config({
 // ================================
 // SECURITY HEADERS
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  }),
+);
 
 // MONGO SANITIZE
 
