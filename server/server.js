@@ -50,7 +50,13 @@ cloudinary.config({
 
 app.use(
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        frameSrc: ["'self'", "https://vip-engineer.onrender.com"],
+      },
+    },
+
     crossOriginEmbedderPolicy: false,
   }),
 );
