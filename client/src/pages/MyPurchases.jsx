@@ -40,25 +40,14 @@ export default function MyPurchases() {
 
   // VIEW PDF
 
-  const viewPDF = async (noteId) => {
+  const viewPDF = (noteId) => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await API.get(`/notes/view/${noteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-
-        responseType: "blob",
-      });
-
-      const file = new Blob([response.data], {
-        type: "application/pdf",
-      });
-
-      const fileURL = URL.createObjectURL(file);
-
-      window.open(fileURL);
+      window.open(
+        `https://vip-engineer.onrender.com/notes/view/${noteId}?token=${token}`,
+        "_blank",
+      );
     } catch (error) {
       console.log(error);
 
