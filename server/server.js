@@ -599,12 +599,22 @@ app.get(
 
 // SECURE PDF VIEW
 
-app.get("/notes/view/:id", authMiddleware, async (req, res) => {
+app.get("/notes/view/:id", async (req, res) => {
   try {
+    const token = req.query.token;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No Token",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const noteId = req.params.id;
 
     const purchase = await Purchase.findOne({
-      userId: req.user.id,
+      userId: decoded.id,
       noteId,
       paymentStatus: "approved",
     }).populate("noteId");
