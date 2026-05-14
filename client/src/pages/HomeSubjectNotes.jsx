@@ -344,7 +344,7 @@ export default function HomeSubjectNotes() {
                     <span className="badge bg-success mb-4">FREE ACCESS</span>
 
                     <a
-                      href={note.pdf}
+                      href={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(note.pdf)}`}
                       target="_blank"
                       rel="noreferrer"
                       className="btn btn-success w-100 fw-bold"

@@ -86,7 +86,7 @@ const pdfStorage = new CloudinaryStorage({
   params: async (req, file) => ({
     folder: "vip-engineer/pdfs",
 
-    resource_type: "image",
+    resource_type: "raw",
 
     type: "upload",
 
@@ -102,11 +102,11 @@ const pdfStorage = new CloudinaryStorage({
 
 const screenshotStorage = new CloudinaryStorage({
   cloudinary,
-  params: {
+  params: async (req, file) => ({
     folder: "vip-engineer/screenshots",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
-    public_id: (req, file) => Date.now() + "-screenshot",
-  },
+    public_id: Date.now() + "-screenshot",
+  }),
 });
 
 // ================================
