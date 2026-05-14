@@ -12,7 +12,6 @@ import Dashboard from "./pages/Dashboard";
 import AdminRequests from "./pages/AdminRequests";
 import AddNote from "./pages/AddNote";
 import SubjectNotes from "./pages/SubjectNotes";
-import PdfViewer from "./pages/PdfViewer";
 import AddHomeFolder from "./pages/AddHomeFolder";
 import AddHomeFiles from "./pages/AddHomeFiles";
 import HomeSubjectNotes from "./pages/HomeSubjectNotes";
@@ -49,7 +48,7 @@ export default function App() {
       <Route path="/add-home-files" element={<AddHomeFiles />} />
 
       <Route path="/home-subject/:name" element={<HomeSubjectNotes />} />
-      <Route path="/pdf-viewer" element={<PdfViewer />} />
+    
     </Routes>
   );
 }

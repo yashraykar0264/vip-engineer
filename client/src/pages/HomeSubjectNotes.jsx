@@ -342,7 +342,6 @@ export default function HomeSubjectNotes() {
                     </p>
 
                     <span className="badge bg-success mb-4">FREE ACCESS</span>
-
                     <button
                       className="btn btn-success w-100 fw-bold"
                       style={{
@@ -352,9 +351,7 @@ export default function HomeSubjectNotes() {
                       }}
                       onClick={() => {
                         window.open(
-                          `/#/pdf-viewer?url=${encodeURIComponent(
-                            `https://vip-engineer.onrender.com/notes/free/${note._id}`,
-                          )}`,
+                          `https://vip-engineer.onrender.com/notes/free/${note._id}`,
                           "_blank",
                         );
                       }}

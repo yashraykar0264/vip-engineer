@@ -428,9 +428,7 @@ export default function SubjectNotes() {
                       }}
                       onClick={() => {
                         window.open(
-                          `/#/pdf-viewer?url=${encodeURIComponent(
-                            `https://vip-engineer.onrender.com/notes/free/${note._id}`,
-                          )}`,
+                          `https://vip-engineer.onrender.com/notes/free/${note._id}`,
                           "_blank",
                         );
                       }}
@@ -575,10 +573,10 @@ export default function SubjectNotes() {
                         onClick={() => {
                           const token = localStorage.getItem("token");
 
+                          const token = localStorage.getItem("token");
+
                           window.open(
-                            `/#/pdf-viewer?url=${encodeURIComponent(
-                              `https://vip-engineer.onrender.com/notes/view/${note._id}?token=${token}`,
-                            )}`,
+                            `https://vip-engineer.onrender.com/notes/view/${note._id}?token=${token}`,
                             "_blank",
                           );
                         }}

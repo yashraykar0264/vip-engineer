@@ -642,10 +642,7 @@ app.get("/notes/view/:id", async (req, res) => {
 
     res.setHeader("Content-Type", "application/pdf");
 
-    res.setHeader(
-      "Content-Disposition",
-      `inline; filename="${Date.now()}.pdf"`,
-    );
+   res.removeHeader("Content-Disposition");
 
     response.data.pipe(res);
   } catch (error) {
@@ -681,10 +678,7 @@ app.get("/notes/free/:id", async (req, res) => {
 
     res.setHeader("Content-Type", "application/pdf");
 
-    res.setHeader(
-      "Content-Disposition",
-      `inline; filename="${Date.now()}.pdf"`,
-    );
+    res.removeHeader("Content-Disposition");
 
     response.data.pipe(res);
   } catch (error) {
