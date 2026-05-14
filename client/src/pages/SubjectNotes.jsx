@@ -573,7 +573,7 @@ export default function SubjectNotes() {
                         onClick={() => {
                           const token = localStorage.getItem("token");
 
-                          const token = localStorage.getItem("token");
+                        
 
                           window.open(
                             `https://vip-engineer.onrender.com/notes/view/${note._id}?token=${token}`,
