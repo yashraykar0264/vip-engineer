@@ -86,7 +86,7 @@ const pdfStorage = new CloudinaryStorage({
   params: async (req, file) => ({
     folder: "vip-engineer/pdfs",
 
-    resource_type: "raw",
+    resource_type: "image",
 
     type: "upload",
 
