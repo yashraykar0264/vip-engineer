@@ -642,7 +642,7 @@ app.get("/notes/view/:id", async (req, res) => {
 
     res.setHeader("Content-Type", "application/pdf");
 
-   res.removeHeader("Content-Disposition");
+    res.removeHeader("Content-Disposition");
 
     response.data.pipe(res);
   } catch (error) {
@@ -658,7 +658,9 @@ app.get("/notes/view/:id", async (req, res) => {
 
 app.get("/notes/free/:id", async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id);
+    const note =
+      (await Note.findById(req.params.id)) ||
+      (await HomeNote.findById(req.params.id));
 
     if (!note) {
       return res.status(404).json({
