@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import API from "../services/api";
+import { FaInstagram } from "react-icons/fa";
 
 export default function Home() {
   const navigate = useNavigate();
