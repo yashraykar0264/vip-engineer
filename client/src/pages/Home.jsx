@@ -395,7 +395,6 @@ export default function Home() {
               marginBottom: "0",
             }}
           >
-            <FaInstagram style={{ color: "#E1306C", marginRight: "6px" }} />
             <a
               href="https://instagram.com/vip_engineer09"
               target="_blank"
