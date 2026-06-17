@@ -108,7 +108,8 @@ Cloudinary Storage
 
 ### Home Page
 
-(Add Screenshot Here)
+<img width="1726" height="1011" alt="image" src="https://github.com/user-attachments/assets/0b125e37-3643-4f52-b1f4-6e31c42a62fd" />
+
 
 ### Dashboard
 
@@ -116,11 +117,18 @@ Cloudinary Storage
 
 ### Admin Panel
 
-(Add Screenshot Here)
+<img width="940" height="985" alt="image" src="https://github.com/user-attachments/assets/3b4666ec-64aa-404e-ac0d-ca83ac8a7214" />
+
+<img width="151" height="161" alt="image" src="https://github.com/user-attachments/assets/390566cf-7c3a-4600-904a-bfe0ed7bd22d" />
 
 ### Notes Section
 
-(Add Screenshot Here)
+<img width="953" height="868" alt="image" src="https://github.com/user-attachments/assets/20bad15a-66e7-4d91-8b42-ce0c4041b73d" />
+
+### Login/Signup
+
+<img width="267" height="417" alt="image" src="https://github.com/user-attachments/assets/dcfb2419-ccb9-4bbc-9d86-0eb8c2245f3c" />
+<img width="240" height="170" alt="image" src="https://github.com/user-attachments/assets/ac174d5a-2a9b-496a-86ea-c220793b4b0b" />
 
 ---
 
