@@ -2,7 +2,6 @@
 ![Node.js](https://img.shields.io/badge/Node.js-Backend-green)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![JWT](https://img.shields.io/badge/Auth-JWT-orange)
-![Razorpay](https://img.shields.io/badge/Payments-Razorpay-blue)
 
 # 🚀 VIP Engineer
 
